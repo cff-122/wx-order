@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>微信订单创建</title>
+<style>
+body{font-family:'PingFang SC',Arial,sans-serif;max-width:500px;margin:30px auto;padding:16px;background:#f4f6f8}
+.card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px #0001}
+h2{text-align:center;color:#07c160;margin-bottom:20px}
+.f{margin-bottom:14px}
+label{font-size:14px;font-weight:600;color:#333;display:block;margin-bottom:4px}
+input{padding:8px 10px;width:100%;border:1px solid #ddd;border-radius:6px;font-size:15px;box-sizing:border-box}
+button{width:100%;background:#07c160;color:#fff;border:none;padding:12px;border-radius:8px;font-size:16px;cursor:pointer;margin-top:6px}
+button:active{opacity:.85}
+.result{margin-top:18px;background:#e8f5e9;border-radius:8px;padding:16px;display:none;font-size:14px}
+.result b{color:#333}
+.copy-btn{background:#1890ff!important;margin-top:8px;padding:8px 14px!important;font-size:13px!important}
+</style>
+</head>
+<body>
+<div class="card">
+<h2>🛒 微信订单创建</h2>
+<div class="f"><label>客户微信名</label><input id="c" placeholder="例：小明"></div>
+<div class="f"><label>商品名称</label><input id="p" placeholder="例：真皮钱包"></div>
+<div class="f"><label>单价（元）</label><input id="pr" type="number" placeholder="0.00"></div>
+<div class="f"><label>数量</label><input id="q" type="number" value="1" min="1"></div>
+<button onclick="go()">📋 生成订单</button>
+
+<div class="result" id="r">
+  <p><b>订单号：</b><span id="on"></span></p>
+  <p><b>客户：</b><span id="dc"></span></p>
+  <p><b>商品：</b><span id="dp"></span></p>
+  <p><b>金额：</b>¥<span id="da"></span></p>
+  <p><b>时间：</b><span id="dt"></span></p>
+  <button class="copy-btn" onclick="cpy()">📎 复制订单号</button>
+  <p style="color:#888;font-size:12px;margin-top:10px">截图发给客户，收钱后标记一下就好 ✅</p>
+</div>
+</div>
+
+<script>
+function genOrderNum(){
+  const d=new Date(),y=String(d.getFullYear()).slice(-2),
+  m=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0'),
+  t=String(d.getTime()).slice(-6),r=String(Math.floor(Math.random()*1000)).padStart(3,'0');
+  return 'WX'+y+m+dd+t+r;
+}
+function go(){
+  const c=c.value.trim(),p=p.value.trim(),pr=parseFloat(pr.value),q=parseInt(q.value)||1;
+  if(!c||!p||!pr){alert('把信息填完整哈～');return;}
+  const num=genOrderNum(),total=(pr*q).toFixed(2),now=d.toLocaleString('zh-CN');
+  on.textContent=num; dc.textContent=c; dp.textContent=p+' × '+q; da.textContent=total; dt.textContent=now;
+  r.style.display='block'; r.scrollIntoView({behavior:'smooth'});
+  let arr=JSON.parse(localStorage.getItem('orders')||'[]');
+  arr.push({orderNumber:num,customerName:c,productName:p,price:pr,quantity:q,totalAmount:total,createTime:now,status:'待付款'});
+  localStorage.setItem('orders',JSON.stringify(arr));
+}
+function cpy(){navigator.clipboard.writeText(on.textContent).then(()=>alert('✅ 已复制'))}
+</script>
+</body>
+</html>
