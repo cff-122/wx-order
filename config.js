@@ -1,5 +1,5 @@
 const CONFIG = {
-  GITHUB_TOKEN: "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", // 例如：ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456
+  GITHUB_TOKEN: "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", // 例如：ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456
   OWNER: "cff-122",
   REPO: "wx-order"
 };
