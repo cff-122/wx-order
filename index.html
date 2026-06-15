@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>微信订单管家</title>
+
+<!-- PWA核心配置：告诉手机这是个App -->
+<link rel="manifest" href="/wx-order/manifest.json">
+<meta name="theme-color" content="#07c160">
+<link rel="apple-touch-icon" href="/wx-order/icon.png">
+
+<style>
+:root {
+  --primary: #07c160;
+  --primary-light: #e8f5e9;
+  --blue: #1677ff;
+  --orange: #fa8c16;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text-main: #1f2937;
+  --text-sub: #6b7280;
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
+  --radius: 16px;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  max-width: 540px; margin: 0 auto; padding: 12px;
+  background: var(--bg); color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 顶部统计卡片 */
+.stats-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;
+}
+.stat-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 16px; box-shadow: var(--shadow);
+}
+.stat-title { font-size: 12px; color: var(--text-sub); margin-bottom: 8px; font-weight: 500; }
+.stat-num { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+.stat-order { color: var(--blue); }
+.stat-amount { color: var(--primary); }
+.stat-wait { color: var(--orange); }
+.stat-paid { color: #52c41a; }
+
+/* 主表单卡片 */
+.main-card {
+  background: var(--card); border-radius: var(--radius);
+  padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px;
+}
+h2 { margin: 0 0 20px; font-size: 20px; font-weight: 600; color: var(--text-main); text-align: center; }
+h2 span { color: var(--primary); }
+
+/* 表单样式 */
+.form-group { margin-bottom: 16px; }
+label {
+  display: block; font-size: 13px; font-weight: 600; color: var(--text-main);
+  margin-bottom: 6px; padding-left: 2px;
+}
+input, textarea, select {
+  width: 100%; padding: 12px 14px; border: 1px solid #e5e7eb;
+  border-radius: 10px; font-size: 15px; background: #f9fafb;
+  transition: all 0.2s;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none; border-color: var(--primary); background: #fff;
+  box-shadow: 0 0 0 3px rgba(7,193,96,0.1);
+}
+textarea { min-height: 44px; resize: vertical; }
+
+/* 按钮样式 */
+.btn {
+  width: 100%; padding: 14px; border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.btn-primary { background: linear-gradient(135deg, #06d160, #0aab5a); color: #fff; margin-top: 8px; }
+.btn-primary:active { transform: scale(0.98); opacity: 0.9; }
+
+.action-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
+.btn-action { padding: 10px 8px; font-size: 12px; border-radius: 10px; font-weight: 500; }
+.btn-blue { background: #eef4ff; color: var(--blue); }
+.btn-orange { background: #fff7e6; color: var(--orange); }
+.btn-gray { background: #f5f5f5; color: #666; }
+
+/* 最近订单预览 */
+.preview { margin-top: 20px; }
+.preview h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: var(--text-sub); }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #f9fafb; color: #999; font-weight: 500; padding: 8px 6px; text-align: left; }
+td { padding: 8px 6px; border-top: 1px solid #f0f0f0; color: var(--text-main); }
+.status-tag {
+  padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500;
+}
+.status-wait { background: #fff7e6; color: #d46b08; }
+.status-paid { background: #f6ffed; color: #389e0d; }
+
+.tip { text-align: center; font-size: 11px; color: #bbb; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<!-- 当日统计 -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-title">📦 今日订单</div>
+    <div class="stat-num stat-order" id="todayCount">0</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-title">💰 今日销售额</div>
+    <div class="stat-num stat-amount" id="todayAmount">¥0.00</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-title">⏳ 待收款</div>
+    <div class="stat-num stat-wait" id="todayWait">¥0.00</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-title">✅ 已收款</div>
+    <div class="stat-num stat-paid" id="todayPaid">¥0.00</div>
+  </div>
+</div>
+
+<!-- 订单录入卡片 -->
+<div class="main-card">
+  <h2><span>🛒</span> 新建订单</h2>
+  
+  <div class="form-group"><label>客户微信名</label><input id="c" placeholder="例：小明"/></div>
+  <div class="form-group"><label>收货地址</label><textarea id="addr" rows="2" placeholder="省市区+街道门牌号"></textarea></div>
+  <div class="form-group"><label>商品名称</label><input id="p" placeholder="例：头层牛皮钱包"/></div>
+  
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="form-group"><label>单价 (元)</label><input id="pr" type="number" step="0.01" placeholder="0.00"/></div>
+    <div class="form-group"><label>数量</label><input id="q" type="number" value="1" min="1"/></div>
+  </div>
+  
+  <div class="form-group"><label>订单备注</label><input id="memo" placeholder="颜色/尺寸/特殊要求"/></div>
+  <div class="form-group"><label>收款状态</label>
+    <select id="paid">
+      <option value="待收款">⏳ 待收款</option>
+      <option value="已收款">✅ 已收款</option>
+    </select>
+  </div>
+
+  <button class="btn btn-primary" onclick="go()">
+    <span>📋</span> 提交订单
+  </button>
+
+  <!-- 批量操作按钮 -->
+  <div class="action-bar">
+    <button class="btn-action btn-blue" onclick="downloadCSV()">📥 导出CSV</button>
+    <button class="btn-action btn-orange" onclick="downloadJSON()">💾 备份</button>
+    <button class="btn-action btn-gray" onclick="clearOrders()">🗑 清空</button>
+  </div>
+</div>
+
+<!-- 最近订单预览 -->
+<div class="main-card preview">
+  <h3>📃 最近订单</h3>
+  <div id="preview"></div>
+  <p class="tip">数据仅保存在本机，导出后建议定期备份</p>
+</div>
+
+<script>
+// 本地存储Key
+const KEY = 'wechatOrders';
+const load = () => JSON.parse(localStorage.getItem(KEY) || '[]');
+const save = (arr) => localStorage.setItem(KEY, JSON.stringify(arr));
+
+// 生成订单号
+function genOrderNum(){
+  const d = new Date();
+  return 'WX' + String(d.getFullYear()).slice(-2)
+    + (d.getMonth()+1).toString().padStart(2,'0')
+    + d.getDate().toString().padStart(2,'0')
+    + String(d.getTime()).slice(-6)
+    + Math.floor(Math.random()*1000).toString().padStart(3,'0');
+}
+
+// 当日统计
+function countToday(){
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}/${today.getMonth()+1}/${today.getDate()}`;
+  const orders = load();
+  let count=0, amount=0, wait=0, paid=0;
+  orders.forEach(o=>{
+    if(o.createTime.startsWith(todayStr)){
+      count++; amount += parseFloat(o.totalAmount);
+      if(o.status === '待收款') wait += parseFloat(o.totalAmount);
+      if(o.status === '已收款') paid += parseFloat(o.totalAmount);
+    }
+  });
+  document.getElementById('todayCount').textContent = count;
+  document.getElementById('todayAmount').textContent = `¥${amount.toFixed(2)}`;
+  document.getElementById('todayWait').textContent = `¥${wait.toFixed(2)}`;
+  document.getElementById('todayPaid').textContent = `¥${paid.toFixed(2)}`;
+}
+
+// 提交订单
+function go(){
+  const c = c.value.trim(), addrTxt = addr.value.trim(),
+        p = p.value.trim(), pr = parseFloat(pr.value),
+        q = parseInt(q.value)||1, memo = memo.value.trim(),
+        paidVal = paid.value;
+  if(!c || !p || !pr){ alert('请填写客户、商品和价格'); return; }
+
+  const o = {
+    orderNumber: genOrderNum(),
+    customerName: c,
+    address: addrTxt,
+    productName: p,
+    price: pr,
+    quantity: q,
+    memo: memo,
+    totalAmount: (pr*q).toFixed(2),
+    createTime: new Date().toLocaleString('zh-CN'),
+    status: paidVal
+  };
+  const arr = load(); arr.push(o); save(arr);
+  countToday(); renderPreview();
+  // 清空表单
+  c.value = p.value = pr.value = q.value = '';
+  addr.value = memo.value = ''; paid.value = '待收款';
+  // 震动反馈（手机端有效）
+  if(navigator.vibrate) navigator.vibrate(50);
+}
+
+// 导出CSV（WPS直接打开）
+function downloadCSV(){
+  const arr = load(); if(!arr.length){ alert('暂无订单'); return; }
+  let csv = '\uFEFF订单号,客户微信,收货地址,商品,单价,数量,总金额,备注,收款状态,下单时间\n';
+  arr.forEach(o=>{
+    csv += [o.orderNumber, o.customerName, o.address, o.productName, o.price, o.quantity, o.totalAmount, o.memo, o.status, o.createTime]
+      .map(v => '"'+String(v).replace(/"/g,'""')+'"').join(',') + '\n';
+  });
+  triggerDown(new Blob([csv],{type:'text/csv;charset=utf-8'}), `微信订单_${today()}.csv`);
+}
+
+// 导出JSON备份
+function downloadJSON(){
+  const arr = load(); if(!arr.length){ alert('暂无订单'); return; }
+  triggerDown(new Blob([JSON.stringify(arr,null,2)],{type:'application/json'}), `订单备份_${today()}.json`);
+}
+
+// 清空本地订单
+function clearOrders(){
+  if(!confirm('确定清空本地订单？（请先确保已导出备份到电脑）')) return;
+  localStorage.removeItem(KEY); countToday(); renderPreview();
+}
+
+// 触发下载
+function triggerDown(blob, name){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// 日期格式化
+function today(){
+  const d = new Date();
+  return d.getFullYear() + '' + (d.getMonth()+1).toString().padStart(2,'0') + d.getDate().toString().padStart(2,'0');
+}
+
+// 渲染最近订单预览
+function renderPreview(){
+  const arr = load(); const el = document.getElementById('preview');
+  if(!arr.length){ el.innerHTML = '<p style="color:#bbb;text-align:center;font-size:13px;">暂无订单</p>'; return; }
+  let html = '<table><tr><th>订单号</th><th>客户</th><th>金额</th><th>状态</th></tr>';
+  arr.slice(-5).reverse().forEach(o=>{
+    const tagClass = o.status === '已收款' ? 'status-paid' : 'status-wait';
+    html += `<tr>
+      <td>${o.orderNumber.slice(-6)}</td>
+      <td>${o.customerName}</td>
+      <td>¥${o.totalAmount}</td>
+      <td><span class="status-tag ${tagClass}">${o.status}</span></td>
+    </tr>`;
+  });
+  html += '</table>';
+  el.innerHTML = html;
+}
+
+// PWA注册（装App用）
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/wx-order/service-worker.js')
+      .then(reg => console.log('Service Worker 注册成功'))
+      .catch(err => console.log('Service Worker 注册失败'));
+  });
+}
+
+// 初始化
+countToday(); renderPreview();
+</script>
+</body>
+</html>
