@@ -27,7 +27,7 @@ body {
 }
 .tab-item {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 500; color: #999; cursor: pointer;
+  font-size: 14px; font-weight: 500; color: #999; cursor: pointer;
   position: relative; transition: all 0.2s;
 }
 .tab-item.active { color: var(--primary); }
@@ -48,16 +48,7 @@ body {
 .stat-profit { color: var(--red); } .stat-gross { color: #722ed1; }
 .stat-unpaid { color: #d46b08; }
 
-/* 成本设置面板（移至Tap1） */
-.cost-setting { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 14px; }
-.cost-header { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 14px; font-weight: 600; }
-.cost-body { padding: 0 14px 14px; display: none; }
-.cost-body.show { display: block; }
-.cost-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.cost-form label { font-size: 11px; color: #666; display: block; margin-bottom: 3px; }
-.cost-form input { width: 100%; padding: 9px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; background: #f9fafb; }
-
-/* 创建订单卡片 */
+/* 卡片通用样式 */
 .main-card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
 h2 { margin: 0 0 16px; font-size: 19px; font-weight: 600; text-align: center; }
 label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
@@ -68,10 +59,12 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(7,193,96,0.1); }
 textarea { min-height: 42px; resize: vertical; }
 
+/* 三列输入组 */
 .input3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
 .input3 label { font-size: 11px; color: #666; margin-bottom: 3px; display: block; }
 .input3 input { padding: 9px 10px; font-size: 13px; }
 
+/* 定金输入 */
 .deposit-box { margin-bottom: 14px; display: none; }
 .deposit-box.show { display: block; }
 .deposit-result {
@@ -79,16 +72,39 @@ textarea { min-height: 42px; resize: vertical; }
   font-size: 13px; color: #d46b08; text-align: center; font-weight: 500;
 }
 
-.btn { width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #06d160, #0aab5a); margin-top: 6px; cursor: pointer; }
+/* 按钮样式 */
+.btn { width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #06d160, #0aab5a); margin-top: 6px; cursor: pointer; transition: all 0.2s; }
 .btn:active { transform: scale(0.98); }
-
 .action-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 16px; }
 .btna { padding: 9px 6px; font-size: 12px; border-radius: 10px; font-weight: 500; border: none; cursor: pointer; }
 .btna-b { background: #eef4ff; color: var(--blue); }
 .btna-o { background: #fff7e6; color: var(--orange); }
 .btna-g { background: #f5f5f5; color: #666; }
 
-.preview h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #6b7280; }
+/* 成本设置面板 */
+.cost-setting { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 14px; }
+.cost-header { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 14px; font-weight: 600; }
+.cost-body { padding: 0 14px 14px; display: none; }
+.cost-body.show { display: block; }
+.cost-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.cost-form label { font-size: 11px; color: #666; display: block; margin-bottom: 3px; }
+.cost-form input { width: 100%; padding: 9px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; background: #f9fafb; }
+
+/* 商品行样式 */
+.product-row { margin-top: 12px; }
+.product-row + .product-row { border-top: 1px solid #f0f0f0; padding-top: 12px; }
+
+/* 数据概览样式 */
+.unpaid-list { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.unpaid-list h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #d46b08; }
+.unpaid-item { padding: 10px 0; border-top: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+.unpaid-item:first-child { border-top: none; }
+.unpaid-info .name { font-size: 13px; font-weight: 500; color: var(--text-main); }
+.unpaid-info .time { font-size: 11px; color: #999; margin-top: 2px; }
+.unpaid-amount { font-size: 14px; font-weight: 600; color: #d46b08; }
+
+.preview { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.preview h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #6b7280; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th { background: #f9fafb; color: #999; font-weight: 500; padding: 7px 6px; text-align: left; }
 td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
@@ -109,31 +125,16 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
 <div class="tab-bar">
   <div class="tab-item active" onclick="switchTab('create')">📝 创建订单</div>
   <div class="tab-item" onclick="switchTab('overview')">📊 数据概览</div>
+  <div class="tab-item" onclick="switchTab('materials')">📦 物料管理</div>
 </div>
 
-<!-- Tab1：创建订单（默认显示） -->
+<!-- Tab1：创建订单 -->
 <div id="tab-create" class="tab-content active">
-  <!-- 成本设置（已移至此处） -->
-  <div class="cost-setting">
-    <div class="cost-header" onclick="toggleCost()">
-      ⚙️ 默认成本设置
-      <span id="costArr" style="font-size:12px;color:#999">▼</span>
-    </div>
-    <div class="cost-body" id="costBody">
-      <div class="cost-form">
-        <div><label>默认采购(元)</label><input id="defPur" type="number" step="0.01" placeholder="0.00"></div>
-        <div><label>默认快递(元)</label><input id="defExp" type="number" step="0.01" placeholder="0.00"></div>
-        <div><label>默认包装(元)</label><input id="defPak" type="number" step="0.01" placeholder="0.00"></div>
-      </div>
-      <button class="btna btna-b" style="margin-top:10px;width:100%" onclick="saveDef()">保存默认成本</button>
-    </div>
-  </div>
-
   <div class="main-card">
     <h2>🛒 新建订单</h2>
-    <div style="margin-bottom:12px"><label>客户微信名</label><input id="c" placeholder="必填"></div>
-    <div style="margin-bottom:12px"><label>1688货源链接</label><input id="src1688" placeholder="https://detail.1688.com/..."></div>
     
+    <!-- 订单级信息 -->
+    <div style="margin-bottom:12px"><label>客户微信名</label><input id="c" placeholder="必填"></div>
     <div style="margin-bottom:12px">
       <label>收货地址（粘贴整段自动识别电话）</label>
       <div style="display:flex;gap:8px;align-items:stretch">
@@ -144,23 +145,38 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
         </div>
       </div>
     </div>
-
     <div style="margin-bottom:12px"><label>联系电话</label><input id="tel" inputmode="numeric"></div>
-    <div style="margin-bottom:12px"><label>商品名称</label><input id="p" placeholder="必填"></div>
 
+    <!-- 订单级成本 -->
     <div class="input3">
-      <div><label>采购成本</label><input id="pur" type="number" step="0.01" placeholder="不填用默认"></div>
-      <div><label>快递成本</label><input id="exp" type="number" step="0.01" placeholder="不填用默认"></div>
-      <div><label>包装成本</label><input id="pak" type="number" step="0.01" placeholder="不填用默认"></div>
+      <div><label>快递成本(元/单，不填用默认)</label><input id="exp" type="number" step="0.01" placeholder="不填则用默认"></div>
+      <div><label>订单包装成本(元/单，不填用默认)</label><input id="pak" type="number" step="0.01" placeholder="不填则用默认"></div>
+      <div></div>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-      <div><label>单价(元)</label><input id="pr" type="number" step="0.01" placeholder="0.00"></div>
-      <div><label>数量</label><input id="q" type="number" value="1" min="1"></div>
+    <!-- 商品列表 -->
+    <div style="margin-bottom:12px;">
+      <label style="font-size:14px; font-weight:600; color:#333;">🛍️ 商品列表</label>
+      <div id="productContainer">
+        <!-- 商品1（固定） -->
+        <div id="productRow0" class="product-row">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px 0;">
+            <span style="font-size:13px; font-weight:600; color:#666;">商品 1</span>
+          </div>
+          <div style="margin-bottom:10px;"><label>商品名称</label><input id="p0" placeholder="必填，例：头层牛皮钱包"></div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+            <div><label>单价(元)</label><input id="pr0" type="number" step="0.01" placeholder="0.00"></div>
+            <div><label>数量</label><input id="q0" type="number" value="1" min="1"></div>
+          </div>
+          <div style="margin-bottom:10px;"><label>商品1688货源链接</label><input id="src16880" placeholder="https://detail.1688.com/..."></div>
+          <div style="margin-bottom:10px;"><label>商品采购成本(元/个，不填用默认)</label><input id="pur0" type="number" step="0.01" placeholder="不填则用默认"></div>
+        </div>
+      </div>
+      <button type="button" onclick="addProductRow()" style="width:100%; padding:10px; border:2px dashed #e5e7eb; border-radius:10px; background:#f9fafb; color:#666; font-size:13px; font-weight:600; cursor:pointer; margin-top:12px;">+ 添加更多商品</button>
     </div>
 
-    <!-- 收款状态（修正文案） -->
-    <div style="margin-bottom:12px">
+    <!-- 收款状态 -->
+    <div style="margin-bottom:12px;">
       <label>收款状态</label>
       <select id="paid" style="width:100%;min-width:140px" onchange="toggleDeposit()">
         <option value="已收款" selected>✅ 已收款</option>
@@ -168,23 +184,41 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
         <option value="待收款（定金）">💰 待收款（定金）</option>
       </select>
     </div>
-
-    <!-- 定金输入 -->
     <div id="depositBox" class="deposit-box">
       <label>已付定金(元)</label>
       <input id="deposit" type="number" step="0.01" placeholder="请输入已收定金" oninput="calcUnpaid()">
       <div id="depositResult" class="deposit-result">未付尾款：¥0.00</div>
     </div>
 
-    <div style="margin-bottom:4px"><label>备注</label><input id="memo" placeholder="颜色/尺寸/要求"></div>
+    <!-- 订单备注 -->
+    <div style="margin-bottom:4px"><label>订单备注</label><input id="memo" placeholder="颜色/尺寸/特殊要求"></div>
 
     <button class="btn" onclick="go()">📋 提交订单</button>
     <p class="warn">⚠️ 微信内打开可能无法下载，请点右上角「在浏览器中打开」</p>
 
+    <!-- 操作栏 -->
     <div class="action-bar">
       <button class="btna btna-b" onclick="dlCSV()">📥 导出CSV</button>
       <button class="btna btna-o" onclick="dlJSON()">💾 备份</button>
       <button class="btna btna-g" onclick="clr()">🗑 清空</button>
+    </div>
+  </div>
+
+  <!-- 默认成本设置 -->
+  <div class="cost-setting">
+    <div class="cost-header" onclick="toggleCost()">
+      ⚙️ 默认成本设置
+      <span id="costArr" style="font-size:12px;color:#999">▼</span>
+    </div>
+    <div class="cost-body" id="costBody">
+      <div class="cost-form">
+        <div><label>默认采购成本(元/个)</label><input id="defPur" type="number" step="0.01" placeholder="0.00"></div>
+        <div><label>默认快递成本(元/单)</label><input id="defExp" type="number" step="0.01" placeholder="0.00"></div>
+        <div><label>默认订单包装成本(元/单)</label><input id="defPak" type="number" step="0.01" placeholder="0.00"></div>
+        <div><label>默认包装盒成本(元/个)</label><input id="defPackaging" type="number" step="0.01" placeholder="同步自物料管理"></div>
+        <div><label>默认符纸成本(元/张)</label><input id="defTalisman" type="number" step="0.01" placeholder="同步自物料管理"></div>
+      </div>
+      <button class="btna btna-b" style="margin-top:10px;width:100%" onclick="saveDef()">保存默认成本</button>
     </div>
   </div>
 </div>
@@ -201,8 +235,8 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
     <div class="stat-card"><div class="stat-title">💢 待收尾款</div><div class="stat-num stat-unpaid" id="tu">¥0.00</div></div>
   </div>
 
-  <div class="unpaid-list" style="background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:14px;">
-    <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;color:#d46b08;">💢 待收尾款客户</h3>
+  <div class="unpaid-list">
+    <h3>💢 待收尾款客户</h3>
     <div id="unpaidList">
       <p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无待收尾款订单</p>
     </div>
@@ -215,59 +249,109 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
   </div>
 </div>
 
+<!-- Tab3：物料管理 -->
+<div id="tab-materials" class="tab-content">
+  <div class="main-card">
+    <h2>📦 物料管理</h2>
+    <p class="tip" style="margin-bottom:16px;">订单提交时将自动扣减对应库存，采购运费为进货运费，非寄给客户的快递费</p>
+    
+    <!-- 包装盒管理 -->
+    <div style="margin-bottom:20px; padding:14px; background:#f9fafb; border-radius:10px;">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:12px; color:#333;">📦 包装盒</h3>
+      <div style="margin-bottom:10px;"><label>总进价(元)</label><input id="matPackPurchase" type="number" step="0.01" placeholder="采购包装盒的总花费"></div>
+      <div style="margin-bottom:10px;"><label>总个数</label><input id="matPackCount" type="number" min="0" placeholder="采购的包装盒总数量"></div>
+      <div style="margin-bottom:10px;"><label>1688货源链接</label><input id="matPackLink" placeholder="包装盒采购链接"></div>
+      <div style="margin-bottom:10px;">
+        <label>采购运费(元)</label>
+        <input id="matPackFreight" type="number" step="0.01" placeholder="采购包装盒时的运费">
+        <span style="font-size:11px; color:#999; margin-left:6px;">（非寄给客户的快递费）</span>
+      </div>
+      <div style="padding:10px; background:#e8f5e9; border-radius:8px; font-size:13px; color:#2e7d32; margin-bottom:8px;">
+        单个包装盒成本：<strong id="matPackUnitCost">0.00</strong> 元/个
+      </div>
+      <div id="matPackStockWarning"></div>
+    </div>
+
+    <!-- 符纸管理 -->
+    <div style="margin-bottom:20px; padding:14px; background:#f9fafb; border-radius:10px;">
+      <h3 style="font-size:15px; font-weight:600; margin-bottom:12px; color:#333;">📜 符纸</h3>
+      <div style="margin-bottom:10px;"><label>总进价(元)</label><input id="matTalismanPurchase" type="number" step="0.01" placeholder="采购符纸的总花费"></div>
+      <div style="margin-bottom:10px;"><label>总张数</label><input id="matTalismanCount" type="number" min="0" placeholder="采购的符纸总张数"></div>
+      <div style="margin-bottom:10px;"><label>1688货源链接</label><input id="matTalismanLink" placeholder="符纸采购链接"></div>
+      <div style="margin-bottom:10px;">
+        <label>采购运费(元)</label>
+        <input id="matTalismanFreight" type="number" step="0.01" placeholder="采购符纸时的运费">
+        <span style="font-size:11px; color:#999; margin-left:6px;">（非寄给客户的快递费）</span>
+      </div>
+      <div style="padding:10px; background:#e8f5e9; border-radius:8px; font-size:13px; color:#2e7d32; margin-bottom:8px;">
+        单张符纸成本：<strong id="matTalismanUnitCost">0.00</strong> 元/张
+      </div>
+      <div id="matTalismanStockWarning"></div>
+    </div>
+
+    <button class="btn" onclick="saveMaterials()">💾 保存物料设置</button>
+    <div style="margin-top:12px; padding:10px; background:#fff7e6; border-radius:8px; font-size:12px; color:#d46b08;">
+      💡 提示：单个成本=总进价÷总个数，保存后自动同步到「创建订单」的默认成本设置中
+    </div>
+  </div>
+</div>
+
 <script>
-/* ========= 常量 & 默认配置 ========= */
-const K = 'wechatOrders', CK = 'orderDefCost';
-let defCost = { pur:0, exp:0, pak:0 };
+/* ========= 常量配置 ========= */
+const K = 'wechatOrders'; // 订单存储key
+const CK = 'orderDefCost'; // 默认成本存储key
+const MK = 'orderMaterials'; // 物料存储key
+let defCost = { pur:0, exp:0, pak:0, packagingUnit:0, talismanUnit:0 }; // 默认成本
+let itemIndex = 0; // 商品行索引
 
 /* ========= Tab切换 ========= */
 function switchTab(tab) {
+  // 重置Tab样式
   document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
   document.getElementById('tab-create').classList.remove('active');
   document.getElementById('tab-overview').classList.remove('active');
+  document.getElementById('tab-materials').classList.remove('active');
   
-  if(tab === 'create'){
+  // 激活对应Tab
+  if (tab === 'create') {
     document.querySelector('.tab-item:nth-child(1)').classList.add('active');
     document.getElementById('tab-create').classList.add('active');
-  } else {
+  } else if (tab === 'overview') {
     document.querySelector('.tab-item:nth-child(2)').classList.add('active');
     document.getElementById('tab-overview').classList.add('active');
     cnt();
     renderUnpaidList();
     pvw();
+  } else if (tab === 'materials') {
+    document.querySelector('.tab-item:nth-child(3)').classList.add('active');
+    document.getElementById('tab-materials').classList.add('active');
+    loadMaterials();
   }
 }
 
-/* ========= 默认成本 ========= */
+/* ========= 默认成本管理 ========= */
 function loadDef(){
   try {
     const j = localStorage.getItem(CK);
     if(j) defCost = JSON.parse(j);
-    _ph();
-    // 填充设置面板的默认值
-    if(document.getElementById('defPur')){
-        defPur.value = defCost.pur;
-        defExp.value = defCost.exp;
-        defPak.value = defCost.pak;
-    }
+    // 填充默认成本面板
+    document.getElementById('defPur').value = defCost.pur;
+    document.getElementById('defExp').value = defCost.exp;
+    document.getElementById('defPak').value = defCost.pak;
+    document.getElementById('defPackaging').value = defCost.packagingUnit;
+    document.getElementById('defTalisman').value = defCost.talismanUnit;
   } catch(e){}
 }
 function saveDef(){
   defCost = {
-    pur: parseFloat(defPur.value)||0,
-    exp: parseFloat(defExp.value)||0,
-    pak: parseFloat(defPak.value)||0
+    pur: parseFloat(document.getElementById('defPur').value)||0,
+    exp: parseFloat(document.getElementById('defExp').value)||0,
+    pak: parseFloat(document.getElementById('defPak').value)||0,
+    packagingUnit: parseFloat(document.getElementById('defPackaging').value)||0,
+    talismanUnit: parseFloat(document.getElementById('defTalisman').value)||0
   };
   localStorage.setItem(CK, JSON.stringify(defCost));
-  _ph();
   alert('✅ 默认成本已保存');
-}
-function _ph(){
-  try{
-    pur.placeholder = `不填则用 ¥${defCost.pur.toFixed(2)}`;
-    exp.placeholder = `不填则用 ¥${defCost.exp.toFixed(2)}`;
-    pak.placeholder = `不填则用 ¥${defCost.pak.toFixed(2)}`;
-  }catch(e){}
 }
 function toggleCost(){
   const body = document.getElementById('costBody');
@@ -276,9 +360,123 @@ function toggleCost(){
   arr.textContent = body.classList.contains('show') ? '▲' : '▼';
 }
 
-/* ========= 安全读写 ========= */
-function RD(){ try{ return JSON.parse(localStorage.getItem(K)||'[]'); }catch(e){ return []; } }
-function WR(arr){ try{ localStorage.setItem(K, JSON.stringify(arr)); }catch(e){ alert('存储失败，可能空间不足'); } }
+/* ========= 物料管理 ========= */
+function loadMaterials(){
+  try {
+    const m = JSON.parse(localStorage.getItem(MK) || '{"packaging":{"count":0,"unitCost":0},"talisman":{"count":0,"unitCost":0}}');
+    // 填充输入框
+    document.getElementById('matPackPurchase').value = m.packaging.purchasePrice || '';
+    document.getElementById('matPackCount').value = m.packaging.count || '';
+    document.getElementById('matPackLink').value = m.packaging.link || '';
+    document.getElementById('matPackFreight').value = m.packaging.freight || '';
+    document.getElementById('matTalismanPurchase').value = m.talisman.purchasePrice || '';
+    document.getElementById('matTalismanCount').value = m.talisman.count || '';
+    document.getElementById('matTalismanLink').value = m.talisman.link || '';
+    document.getElementById('matTalismanFreight').value = m.talisman.freight || '';
+    // 更新单位成本显示
+    document.getElementById('matPackUnitCost').textContent = (m.packaging.unitCost || 0).toFixed(2);
+    document.getElementById('matTalismanUnitCost').textContent = (m.talisman.unitCost || 0).toFixed(2);
+    // 库存预警
+    const packWarn = document.getElementById('matPackStockWarning');
+    const talismanWarn = document.getElementById('matTalismanStockWarning');
+    packWarn.innerHTML = m.packaging.count === 0 
+      ? '<span style="color:#ff4d4f; font-size:12px;">⚠️ 包装盒库存已耗尽，请及时补货！</span>'
+      : `<span style="color:#666; font-size:12px;">当前库存：${m.packaging.count}个</span>`;
+    talismanWarn.innerHTML = m.talisman.count === 0
+      ? '<span style="color:#ff4d4f; font-size:12px;">⚠️ 符纸库存已耗尽，请及时补货！</span>'
+      : `<span style="color:#666; font-size:12px;">当前库存：${m.talisman.count}张</span>`;
+  } catch(e){}
+}
+function saveMaterials(){
+  try {
+    const packPurchase = parseFloat(document.getElementById('matPackPurchase').value) || 0;
+    const packCount = parseInt(document.getElementById('matPackCount').value) || 0;
+    const packLink = document.getElementById('matPackLink').value.trim();
+    const packFreight = parseFloat(document.getElementById('matPackFreight').value) || 0;
+    const packUnitCost = packCount > 0 ? (packPurchase / packCount) : 0;
+
+    const talismanPurchase = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
+    const talismanCount = parseInt(document.getElementById('matTalismanCount').value) || 0;
+    const talismanLink = document.getElementById('matTalismanLink').value.trim();
+    const talismanFreight = parseFloat(document.getElementById('matTalismanFreight').value) || 0;
+    const talismanUnitCost = talismanCount > 0 ? (talismanPurchase / talismanCount) : 0;
+
+    const materials = {
+      packaging: {
+        purchasePrice: packPurchase,
+        count: packCount,
+        link: packLink,
+        freight: packFreight,
+        unitCost: packUnitCost
+      },
+      talisman: {
+        purchasePrice: talismanPurchase,
+        count: talismanCount,
+        link: talismanLink,
+        freight: talismanFreight,
+        unitCost: talismanUnitCost
+      }
+    };
+    localStorage.setItem(MK, JSON.stringify(materials));
+    // 同步到默认成本
+    defCost.packagingUnit = packUnitCost;
+    defCost.talismanUnit = talismanUnitCost;
+    localStorage.setItem(CK, JSON.stringify(defCost));
+    // 更新UI
+    document.getElementById('defPackaging').value = packUnitCost.toFixed(2);
+    document.getElementById('defTalisman').value = talismanUnitCost.toFixed(2);
+    loadMaterials(); // 刷新库存显示
+    alert('✅ 物料设置保存成功！');
+  } catch(e){ alert('保存失败：'+e.message); }
+}
+// 实时计算单位成本
+document.getElementById('matPackPurchase').addEventListener('input', function(){
+  const purchase = parseFloat(this.value) || 0;
+  const count = parseInt(document.getElementById('matPackCount').value) || 0;
+  document.getElementById('matPackUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
+});
+document.getElementById('matPackCount').addEventListener('input', function(){
+  const purchase = parseFloat(document.getElementById('matPackPurchase').value) || 0;
+  const count = parseInt(this.value) || 0;
+  document.getElementById('matPackUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
+});
+document.getElementById('matTalismanPurchase').addEventListener('input', function(){
+  const purchase = parseFloat(this.value) || 0;
+  const count = parseInt(document.getElementById('matTalismanCount').value) || 0;
+  document.getElementById('matTalismanUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
+});
+document.getElementById('matTalismanCount').addEventListener('input', function(){
+  const purchase = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
+  const count = parseInt(this.value) || 0;
+  document.getElementById('matTalismanUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
+});
+
+/* ========= 商品行管理 ========= */
+function addProductRow(){
+  itemIndex++;
+  const container = document.getElementById('productContainer');
+  const newRow = document.createElement('div');
+  newRow.id = `productRow${itemIndex}`;
+  newRow.className = 'product-row';
+  newRow.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px 0;">
+      <span style="font-size:13px; font-weight:600; color:#666;">商品 ${itemIndex+1}</span>
+      <button type="button" onclick="removeProductRow(${itemIndex})" style="background:#ff4d4f; color:#fff; border:none; border-radius:6px; padding:4px 8px; font-size:12px; cursor:pointer;">− 删除</button>
+    </div>
+    <div style="margin-bottom:10px;"><label>商品名称</label><input id="p${itemIndex}" placeholder="必填，例：头层牛皮钱包"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+      <div><label>单价(元)</label><input id="pr${itemIndex}" type="number" step="0.01" placeholder="0.00"></div>
+      <div><label>数量</label><input id="q${itemIndex}" type="number" value="1" min="1"></div>
+    </div>
+    <div style="margin-bottom:10px;"><label>商品1688货源链接</label><input id="src1688${itemIndex}" placeholder="https://detail.1688.com/..."></div>
+    <div style="margin-bottom:10px;"><label>商品采购成本(元/个，不填用默认)</label><input id="pur${itemIndex}" type="number" step="0.01" placeholder="不填则用默认"></div>
+  `;
+  container.appendChild(newRow);
+}
+function removeProductRow(index){
+  const row = document.getElementById(`productRow${index}`);
+  if(row) row.remove();
+}
 
 /* ========= 智能粘贴 ========= */
 function _parseAddr(s){
@@ -299,7 +497,7 @@ function smartPaste(){
   }catch(e){}
 }
 
-/* ========= 定金逻辑 ========= */
+/* ========= 定金计算 ========= */
 function toggleDeposit(){
   const depositBox = document.getElementById('depositBox');
   if(paid.value === '待收款（定金）'){
@@ -311,163 +509,250 @@ function toggleDeposit(){
 }
 function calcUnpaid(){
   try{
-    const total = (parseFloat(pr.value) || 0) * (parseInt(q.value) || 1);
-    const deposit = parseFloat(deposit.value) || 0;
-    if(deposit > total){
-      alert('定金不能大于商品总金额！');
-      deposit.value = total.toFixed(2);
-      return calcUnpaid();
+    let total = 0;
+    // 计算所有商品总金额
+    for(let i=0; i<=itemIndex; i++){
+      const prEl = document.getElementById(`pr${i}`);
+      const qEl = document.getElementById(`q${i}`);
+      if(!prEl || !qEl) continue;
+      const pr = parseFloat(prEl.value) || 0;
+      const q = parseInt(qEl.value) || 0;
+      total += pr * q;
     }
+    const deposit = parseFloat(deposit.value) || 0;
     const unpaid = total - deposit;
-    document.getElementById('depositResult').textContent = `未付尾款：¥${unpaid.toFixed(2)}`;
+    document.getElementById('depositResult').textContent = `未付尾款：¥${unpaid > 0 ? unpaid.toFixed(2) : '0.00'}`;
   }catch(e){}
 }
 
-/* ========= 统计（含待收尾款，已扣除定金）========= */
+/* ========= 订单提交 ========= */
+function go(){
+  try{
+    // 1. 订单级必填校验
+    const cV = c.value.trim();
+    if(!cV){ alert('客户微信名必填'); c.focus(); return; }
+    const addrV = (addr.value||'').trim();
+    const telV = (tel.value||'').trim();
+    const memoV = (memo.value||'').trim();
+    const paidValue = paid.value;
+
+    // 2. 订单级成本
+    const orderExpressCost = parseFloat(exp.value) || defCost.exp;
+    const orderPackCost = parseFloat(pak.value) || defCost.pak;
+
+    // 3. 收集商品信息
+    let totalQuantity = 0;
+    const items = [];
+    let hasError = false;
+    for(let i=0; i<=itemIndex; i++){
+      const pEl = document.getElementById(`p${i}`);
+      const prEl = document.getElementById(`pr${i}`);
+      const qEl = document.getElementById(`q${i}`);
+      const srcEl = document.getElementById(`src1688${i}`);
+      const purEl = document.getElementById(`pur${i}`);
+      if(!pEl || !prEl || !qEl) continue;
+
+      const pV = pEl.value.trim();
+      const prV = parseFloat(prEl.value);
+      const qV = parseInt(qEl.value) || 1;
+      const srcV = srcEl ? srcEl.value.trim() : '';
+      const purV = purEl ? purEl.value.trim() : '';
+
+      if(!pV){ alert(`商品 ${i+1} 的名称必填`); pEl.focus(); hasError=true; break; }
+      if(!prV || prV <=0){ alert(`商品 ${i+1} 的单价必填且大于0`); prEl.focus(); hasError=true; break; }
+
+      const productPurchaseCost = purV ? parseFloat(purV) : defCost.pur;
+      const productTotal = prV * qV;
+      totalQuantity += qV;
+
+      items.push({
+        productName: pV,
+        price: prV,
+        quantity: qV,
+        productTotal: productTotal,
+        src1688: srcV,
+        purchaseCost: productPurchaseCost
+      });
+    }
+    if(hasError) return;
+    if(totalQuantity === 0){ alert('至少需要添加一个商品，且商品数量大于0'); return; }
+
+    // 4. 检查物料库存
+    const materials = JSON.parse(localStorage.getItem(MK) || '{"packaging":{"count":0},"talisman":{"count":0}}');
+    if(materials.packaging.count < totalQuantity){
+      alert(`❌ 包装盒库存不足！当前剩余${materials.packaging.count}个，需要${totalQuantity}个，请及时补货。`);
+      return;
+    }
+    if(materials.talisman.count < totalQuantity){
+      alert(`❌ 符纸库存不足！当前剩余${materials.talisman.count}张，需要${totalQuantity}张，请及时补货。`);
+      return;
+    }
+
+    // 5. 定金校验
+    let depositVal = 0;
+    let unpaidVal = 0;
+    const totalSales = items.reduce((sum, item) => sum + item.productTotal, 0);
+    if(paidValue === '待收款（定金）'){
+      depositVal = parseFloat(deposit.value) || 0;
+      unpaidVal = totalSales - depositVal;
+      if(depositVal >= totalSales){ alert('定金不能大于等于商品总金额！'); deposit.focus(); return; }
+    }
+
+    // 6. 计算成本利润
+    const packagingUnitCost = materials.packaging.unitCost || defCost.packagingUnit;
+    const talismanUnitCost = materials.talisman.unitCost || defCost.talismanUnit;
+    const expressSharePerItem = totalQuantity > 0 ? orderExpressCost / totalQuantity : 0;
+    const packSharePerItem = totalQuantity > 0 ? orderPackCost / totalQuantity : 0;
+
+    let orderTotalCost = 0;
+    let orderTotalProfit = 0;
+    items.forEach(item => {
+      item.packagingCost = packagingUnitCost;
+      item.talismanCost = talismanUnitCost;
+      item.expressShare = expressSharePerItem;
+      item.packShare = packSharePerItem;
+      item.itemTotalCost = (item.purchaseCost + item.packagingCost + item.talismanCost + expressSharePerItem + packSharePerItem) * item.quantity;
+      item.itemProfit = item.productTotal - item.itemTotalCost;
+      orderTotalCost += item.itemTotalCost;
+      orderTotalProfit += item.itemProfit;
+    });
+
+    // 7. 扣减物料库存
+    materials.packaging.count -= totalQuantity;
+    materials.talisman.count -= totalQuantity;
+    localStorage.setItem(MK, JSON.stringify(materials));
+
+    // 8. 构建订单
+    const order = {
+      orderNumber: 'WX' + Date.now() + Math.floor(Math.random()*1000),
+      customerName: cV,
+      tel: telV,
+      address: addrV,
+      status: paidValue,
+      deposit: depositVal,
+      unpaid: unpaidVal,
+      totalAmount: totalSales,
+      totalCost: orderTotalCost,
+      totalProfit: orderTotalProfit,
+      grossProfitRate: totalSales > 0 ? (orderTotalProfit / totalSales * 100) : 0,
+      createTime: new Date().toLocaleString('zh-CN'),
+      items: items,
+      memo: memoV
+    };
+
+    // 9. 保存订单
+    const orders = JSON.parse(localStorage.getItem(K) || '[]');
+    orders.push(order);
+    localStorage.setItem(K, JSON.stringify(orders));
+
+    // 10. 重置表单
+    resetForm();
+
+    // 11. 提示成功
+    if(navigator.vibrate) navigator.vibrate(50);
+    let msg = `✅ 订单提交成功！\n总销售额：¥${totalSales.toFixed(2)}\n总利润：¥${orderTotalProfit.toFixed(2)}`;
+    if(paidValue === '待收款（定金）'){
+      msg += `\n已付定金：¥${depositVal.toFixed(2)}\n未付尾款：¥${unpaidVal.toFixed(2)}`;
+    }
+    alert(msg);
+
+  }catch(e){ alert('提交失败：'+e.message); }
+}
+function resetForm(){
+  // 重置商品行
+  for(let i=itemIndex; i>0; i--){
+    const row = document.getElementById(`productRow${i}`);
+    if(row) row.remove();
+  }
+  // 重置第一行商品
+  document.getElementById('p0').value = '';
+  document.getElementById('pr0').value = '';
+  document.getElementById('q0').value = '1';
+  document.getElementById('src16880').value = '';
+  document.getElementById('pur0').value = '';
+  itemIndex = 0;
+  // 重置订单级信息
+  c.value = '';
+  addr.value = '';
+  tel.value = '';
+  exp.value = '';
+  pak.value = '';
+  paid.value = '已收款';
+  deposit.value = '';
+  memo.value = '';
+  toggleDeposit();
+}
+
+/* ========= 数据统计 ========= */
 function cnt(){
   try{
     const d = new Date();
     const ts = `${d.getFullYear()}/${(d.getMonth()+1)}/${d.getDate()}`;
-    const A = RD();
+    const orders = JSON.parse(localStorage.getItem(K) || '[]');
     let n=0, a=0, w=0, p=0, prf=0, u=0;
-    A.forEach(o=>{
+    orders.forEach(o => {
       if(o.createTime && o.createTime.startsWith(ts)){
         n++;
-        const amt = parseFloat(o.totalAmount||0);
+        const amt = parseFloat(o.totalAmount) || 0;
         a += amt;
         if(o.status === '待收款') w += amt;
         if(o.status === '已收款') p += amt;
-        // 修正点：待收尾款 = 总金额 - 已付定金
-        if(o.status === '待收款（定金）') u += (amt - (parseFloat(o.deposit)||0));
-        prf += (o.profit ?? 0);
+        if(o.status === '待收款（定金）') u += parseFloat(o.unpaid) || 0;
+        prf += parseFloat(o.totalProfit) || 0;
       }
     });
-    tc.textContent = n;
-    ta.textContent = `¥${a.toFixed(2)}`;
-    tw.textContent = `¥${w.toFixed(2)}`;
-    tp.textContent = `¥${p.toFixed(2)}`;
-    tpr.textContent = `¥${prf.toFixed(2)}`;
-    tg.textContent = a>0 ? `${(prf/a*100).toFixed(2)}%` : '0.00%';
-    tu.textContent = `¥${u.toFixed(2)}`;
+    document.getElementById('tc').textContent = n;
+    document.getElementById('ta').textContent = `¥${a.toFixed(2)}`;
+    document.getElementById('tw').textContent = `¥${w.toFixed(2)}`;
+    document.getElementById('tp').textContent = `¥${p.toFixed(2)}`;
+    document.getElementById('tpr').textContent = `¥${prf.toFixed(2)}`;
+    document.getElementById('tg').textContent = a>0 ? `${(prf/a*100).toFixed(2)}%` : '0.00%';
+    document.getElementById('tu').textContent = `¥${u.toFixed(2)}`;
   }catch(e){}
 }
-
-/* ========= 待收尾款客户列表 ========== */
 function renderUnpaidList(){
   try{
-    const A = RD();
-    const el = document.getElementById('unpaidList');
-    const unpaidOrders = A.filter(o => o.status === '待收款（定金）')
+    const orders = JSON.parse(localStorage.getItem(K) || '[]');
+    const unpaidOrders = orders.filter(o => o.status === '待收款（定金）')
                          .sort((a,b) => new Date(b.createTime) - new Date(a.createTime));
+    const el = document.getElementById('unpaidList');
     if(!unpaidOrders.length){
       el.innerHTML = '<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无待收尾款订单</p>';
       return;
     }
     let html = '';
     unpaidOrders.forEach(o => {
-      const unpaid = (parseFloat(o.totalAmount)||0) - (parseFloat(o.deposit)||0);
+      const unpaid = parseFloat(o.unpaid) || 0;
       html += `
-        <div style="padding:10px 0;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;">
-          <div>
-            <div style="font-size:13px;font-weight:500;">${o.customerName||'-'}</div>
-            <div style="font-size:11px;color:#999;margin-top:2px;">下单：${o.createTime||'-'}</div>
+        <div class="unpaid-item">
+          <div class="unpaid-info">
+            <div class="name">${o.customerName||'-'}</div>
+            <div class="time">下单：${o.createTime||'-'}</div>
           </div>
-          <div style="font-size:14px;font-weight:600;color:#d46b08;">¥${unpaid.toFixed(2)}</div>
+          <div class="unpaid-amount">¥${unpaid.toFixed(2)}</div>
         </div>
       `;
     });
     el.innerHTML = html;
   }catch(e){}
 }
-
-/* ========= 提交订单 ========== */
-function go(){
-  try{
-    const cV = c.value.trim(), pV = p.value.trim(), prV = parseFloat(pr.value);
-    if(!cV){ alert('客户微信名必填'); c.focus(); return; }
-    if(!pV){ alert('商品名称必填'); p.focus(); return; }
-    if(!prV||prV<=0){ alert('单价必填且>0'); pr.focus(); return; }
-
-    const purV = expVal(pur.value, defCost.pur);
-    const expV = expVal(exp.value, defCost.exp);
-    const pakV = expVal(pak.value, defCost.pak);
-    const qty = parseInt(q.value)||1;
-    const total = prV * qty;
-    const cost = purV + expV + pakV;
-    const profit = total - cost;
-
-    let deposit = 0, unpaid = 0;
-    if(paid.value === '待收款（定金）'){
-      deposit = parseFloat(deposit.value) || 0;
-      unpaid = total - deposit;
-      if(deposit >= total){ alert('定金不能大于等于总金额！'); deposit.focus(); return; }
-    }
-
-    const o = {
-      orderNumber: 'WX'+Date.now()+Math.floor(Math.random()*1000),
-      customerName: cV,
-      address: (addr.value||'').trim(),
-      tel: (tel.value||'').trim(),
-      src1688: (src1688.value||'').trim(),
-      productName: pV,
-      price: prV,
-      quantity: qty,
-      purchase: +purV.toFixed(2),
-      express: +expV.toFixed(2),
-      pack: +pakV.toFixed(2),
-      totalCost: +cost.toFixed(2),
-      totalAmount: +total.toFixed(2),
-      deposit: +deposit.toFixed(2), // 保存定金
-      unpaid: +unpaid.toFixed(2),   // 保存尾款
-      profit: +profit.toFixed(2),
-      memo: (memo.value||'').trim(),
-      status: paid.value, // 使用修正后的状态值
-      createTime: new Date().toLocaleString('zh-CN')
-    };
-
-    const A = RD();
-    A.push(o);
-    WR(A);
-
-    // 如果当前在概览页，刷新数据
-    if(document.getElementById('tab-overview').classList.contains('active')){
-        cnt();
-        renderUnpaidList();
-        pvw();
-    }
-
-    // 清空表单
-    c.value = p.value = pr.value = '';
-    q.value = '1';
-    addr.value = tel.value = src1688.value = memo.value = '';
-    pur.value = exp.value = pak.value = '';
-    deposit.value = '';
-    paid.value = '已收款';
-    toggleDeposit();
-    
-    if(navigator.vibrate) navigator.vibrate(50);
-    alert(`✅ 提交成功\n${paid.value==='待收款（定金）'?`已付定金：¥${deposit.toFixed(2)}\n未付尾款：¥${unpaid.toFixed(2)}`:`纯利：¥${profit.toFixed(2)}`}`);
-  }catch(e){ alert('提交失败：'+e.message); }
-}
-function expVal(raw, fb){ return raw.trim()!=='' ? (parseFloat(raw)||0) : fb; }
-
-/* ========= 预览 ========== */
 function pvw(){
   try{
-    const A = RD();
-    const el = pv;
-    if(!A.length){ el.innerHTML='<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无订单</p>'; return; }
+    const orders = JSON.parse(localStorage.getItem(K) || '[]');
+    const el = document.getElementById('pv');
+    if(!orders.length){ el.innerHTML='<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无订单</p>'; return; }
     let h='<table><tr><th>单号</th><th>客户</th><th>状态</th><th>纯利</th><th>货源</th></tr>';
-    A.slice(-6).reverse().forEach(o=>{
-      const pf = (o.profit??0);
+    orders.slice(-6).reverse().forEach(o => {
+      const pf = parseFloat(o.totalProfit) || 0;
       const pc = pf>0?'p-pos':pf<0?'p-neg':'p-zero';
       let statusClass = 'status-paid';
       if(o.status === '待收款') statusClass = 'status-wait';
       if(o.status === '待收款（定金）') statusClass = 'status-deposit';
-      
-      const link = o.src1688 ? `<a href="${o.src1688}" target="_blank" rel="noopener" class="src">1688 ↗</a>` : '<span style="color:#ccc">-</span>';
+      // 取第一个商品的链接作为预览
+      const firstItem = o.items && o.items[0] ? o.items[0] : {};
+      const link = firstItem.src1688 ? `<a href="${firstItem.src1688}" target="_blank" rel="noopener" class="src">1688 ↗</a>` : '<span style="color:#ccc">-</span>';
       h+=`<tr>
-        <td>${(o.orderNumber||'').slice(-6)}</td>
+        <td>${o.orderNumber.slice(-6)}</td>
         <td>${o.customerName||'-'}</td>
         <td><span class="status-tag ${statusClass}">${o.status||'已收款'}</span></td>
         <td class="${pc}">¥${pf.toFixed(2)}</td>
@@ -476,50 +761,61 @@ function pvw(){
     });
     h+='</table>';
     el.innerHTML=h;
-  }catch(e){ pv.innerHTML='<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无订单</p>'; }
+  }catch(e){}
 }
 
-/* ========= 导出CSV（定金行标黄 + 修正字段）========= */
+/* ========= 导出功能（兼容多商品/旧订单） ========= */
 function dlCSV(){
   try{
-    const A = RD();
-    if(!A.length){ alert('暂无订单'); return; }
-    let csv = '\uFEFF单号,客户微信,电话,地址,商品,1688链接,采购,快递,包装,总成本,单价,数量,总额,已付定金,未付尾款,纯利,毛利,备注,状态,时间\n';
-    A.forEach(o=>{
-      const amt = (o.totalAmount||0);
-      const prf = (o.profit??0);
-      const gr = amt>0 ? (prf/amt*100).toFixed(2)+'%' : '0.00%';
-      const deposit = (o.deposit??0);
-      const unpaid = (o.unpaid??0);
-      const isDeposit = o.status === '待收款（定金）';
-      
-      // 修正点：定金行整行添加背景色样式
-      const rowStyle = isDeposit ? 'style="background-color:#fffde7;"' : '';
-      
-      csv += `<tr ${rowStyle}><td>${o.orderNumber||''}</td><td>${o.customerName||''}</td><td>${o.tel||''}</td><td>${o.address||''}</td><td>${o.productName||''}</td><td>${o.src1688||''}</td><td>${o.purchase??0}</td><td>${o.express??0}</td><td>${o.pack??0}</td><td>${o.totalCost??0}</td><td>${o.price||''}</td><td>${o.quantity||''}</td><td>${amt}</td><td>${deposit.toFixed(2)}</td><td>${unpaid.toFixed(2)}</td><td>${prf.toFixed(2)}</td><td>${gr}</td><td>${o.memo||''}</td><td>${o.status||'已收款'}</td><td>${o.createTime||''}</td></tr>\n`;
-    });
-    // 注意：CSV不支持<tr style>，这里为了兼容WPS/Excel，我们使用HTML表格格式导出，或者直接用CSS样式在CSV里是无效的。
-    // 为了让WPS/Excel识别背景色，我们需要输出真正的XLSX格式，但这太复杂。
-    // 替代方案：在“未付尾款”列用显眼的文字提示，或者在状态列标明。
-    // 简单有效的方案：在状态列前面加一个醒目标识。
+    const orders = JSON.parse(localStorage.getItem(K) || '[]');
+    if(!orders.length){ alert('暂无订单'); return; }
+    let csv = '\uFEFF订单号,客户微信,联系电话,收货地址,商品名称,商品单价(元),商品数量,商品总金额(元),商品1688链接,商品采购成本(元/个),包装盒成本(元/个),符纸成本(元/张),分摊快递成本(元/个),分摊订单包装成本(元/个),商品总成本(元),已付定金(元),未付尾款(元),纯利润(元),毛利(%),订单备注,收款状态,下单时间\n';
     
-    // 重新生成标准的CSV（逗号分隔），不加HTML样式，因为CSV不支持。
-    let finalCsv = '\uFEFF单号,客户微信,电话,地址,商品,1688链接,采购,快递,包装,总成本,单价,数量,总额,已付定金,未付尾款,纯利,毛利,备注,状态,时间\n';
-    A.forEach(o=>{
-      const amt = (o.totalAmount||0);
-      const prf = (o.profit??0);
-      const gr = amt>0 ? (prf/amt*100).toFixed(2)+'%' : '0.00%';
-      const prefix = o.status === '待收款（定金）' ? '【定金】' : '';
-      const row = [
-        o.orderNumber||'', o.customerName||'', o.tel||'', o.address||'', o.productName||'',
-        o.src1688||'', (o.purchase??0), (o.express??0), (o.pack??0), (o.totalCost??0),
-        o.price||'', o.quantity||'', amt, (o.deposit??0).toFixed(2), (o.unpaid??0).toFixed(2),
-        prf.toFixed(2), gr, o.memo||'', prefix+o.status||'已收款', o.createTime||''
-      ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',');
-      finalCsv += row + '\n';
+    orders.forEach(order => {
+      // 兼容旧订单（无items数组）
+      if(!order.items || order.items.length === 0){
+        const amt = parseFloat(order.totalAmount) || 0;
+        const prf = parseFloat(order.profit) || 0;
+        const gr = amt > 0 ? (prf / amt * 100).toFixed(2) + '%' : '0.00%';
+        const prefix = order.status === '待收款（定金）' ? '【定金】' : '';
+        const row = [
+          order.orderNumber || '', order.customerName || '', order.tel || '', order.address || '',
+          order.productName || '', order.price || '', order.quantity || 1, amt,
+          order.src1688 || '', order.purchase || 0, 0, 0,
+          (parseFloat(order.express) || 0) / (order.quantity || 1),
+          (parseFloat(order.pack) || 0) / (order.quantity || 1),
+          parseFloat(order.totalCost) || 0,
+          parseFloat(order.deposit) || 0, parseFloat(order.unpaid) || 0,
+          prf.toFixed(2), gr, order.memo || '', prefix + (order.status || '已收款'), order.createTime || ''
+        ].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n';
+        csv += row;
+      } else {
+        // 新订单：多商品分行
+        order.items.forEach((item, idx) => {
+          const itemTotal = parseFloat(item.productTotal) || 0;
+          const itemCost = parseFloat(item.itemTotalCost) || 0;
+          const itemProfit = parseFloat(item.itemProfit) || 0;
+          const gr = itemTotal > 0 ? (itemProfit / itemTotal * 100).toFixed(2) + '%' : '0.00%';
+          const prefix = order.status === '待收款（定金）' ? '【定金】' : '';
+          const row = [
+            order.orderNumber, order.customerName, order.tel, order.address,
+            item.productName, item.price, item.quantity, itemTotal, item.src1688 || '',
+            item.purchaseCost, item.packagingCost, item.talismanCost,
+            item.expressShare, item.packShare, itemCost,
+            idx === 0 ? parseFloat(order.deposit) || 0 : 0,
+            idx === 0 ? parseFloat(order.unpaid) || 0 : 0,
+            itemProfit.toFixed(2), gr,
+            idx === 0 ? order.memo || '' : '',
+            prefix + order.status,
+            idx === 0 ? order.createTime || '' : ''
+          ].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n';
+          csv += row;
+        });
+      }
     });
 
-    const blob = new Blob([finalCsv], {type:'text/csv;charset=utf-8;'});
+    // 同步下载（安卓兼容）
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -528,32 +824,37 @@ function dlCSV(){
     setTimeout(()=>URL.revokeObjectURL(url), 100);
   }catch(e){ alert('导出CSV失败：'+e.message); }
 }
-
 function dlJSON(){
   try{
-    const A = RD(); if(!A.length){alert('暂无订单');return;}
-    const blob = new Blob([JSON.stringify(A,null,2)], {type:'application/json'});
+    const orders = JSON.parse(localStorage.getItem(K) || '[]');
+    if(!orders.length){ alert('暂无订单'); return; }
+    const blob = new Blob([JSON.stringify(orders, null, 2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = `订单备份_${Date.now()}.json`;
     a.click();
     setTimeout(()=>URL.revokeObjectURL(url), 100);
-  }catch(e){alert('备份失败：'+e.message);}
+  }catch(e){ alert('备份失败：'+e.message); }
 }
-
 function clr(){
-  if(!confirm('清空订单？（默认成本不会被清）')) return;
+  if(!confirm('清空订单？（默认成本和物料库存不会被清）')) return;
   localStorage.removeItem(K);
   cnt();
   renderUnpaidList();
   pvw();
-  alert('✅ 已清空');
+  alert('✅ 订单已清空');
 }
 
 /* ========= 初始化 ========= */
-loadDef();
-toggleDeposit(); // 初始化隐藏定金栏
+window.onload = function(){
+  loadDef();
+  loadMaterials();
+  cnt();
+  renderUnpaidList();
+  pvw();
+  toggleDeposit();
+};
 </script>
 </body>
 </html>
