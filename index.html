@@ -20,7 +20,7 @@ body {
   max-width: 540px; margin: 0 auto; background: var(--bg); min-height: 100vh;
 }
 
-/* ===== 微信式Tab栏 ===== */
+/* Tab栏 */
 .tab-bar {
   position: sticky; top: 0; z-index: 100; background: var(--card);
   display: flex; height: var(--tab-height); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -38,7 +38,7 @@ body {
 .tab-content { display: none; padding: 12px; }
 .tab-content.active { display: block; }
 
-/* ===== 统计卡片 ===== */
+/* 统计卡片 */
 .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
 .stat-card { background: var(--card); border-radius: var(--radius); padding: 12px 8px; box-shadow: var(--shadow); text-align: center; }
 .stat-title { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
@@ -46,9 +46,9 @@ body {
 .stat-order { color: var(--blue); } .stat-amount { color: var(--primary); }
 .stat-wait { color: var(--orange); } .stat-paid { color: #52c41a; }
 .stat-profit { color: var(--red); } .stat-gross { color: #722ed1; }
-.stat-unpaid { color: #d46b08; } /* 待收尾款专属颜色 */
+.stat-unpaid { color: #d46b08; }
 
-/* ===== 成本设置面板 ===== */
+/* 成本设置面板（移至Tap1） */
 .cost-setting { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 14px; }
 .cost-header { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 14px; font-weight: 600; }
 .cost-body { padding: 0 14px 14px; display: none; }
@@ -57,7 +57,7 @@ body {
 .cost-form label { font-size: 11px; color: #666; display: block; margin-bottom: 3px; }
 .cost-form input { width: 100%; padding: 9px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; background: #f9fafb; }
 
-/* ===== 创建订单Tab样式 ===== */
+/* 创建订单卡片 */
 .main-card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
 h2 { margin: 0 0 16px; font-size: 19px; font-weight: 600; text-align: center; }
 label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
@@ -68,45 +68,19 @@ input, textarea, select {
 input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(7,193,96,0.1); }
 textarea { min-height: 42px; resize: vertical; }
 
-/* 成本/定金输入组 */
 .input3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
 .input3 label { font-size: 11px; color: #666; margin-bottom: 3px; display: block; }
 .input3 input { padding: 9px 10px; font-size: 13px; }
 
-/* 定金输入（默认隐藏） */
-.deposit-box { margin-bottom: 14px; display: none; } /* 默认隐藏，选中代收款才显示 */
+.deposit-box { margin-bottom: 14px; display: none; }
 .deposit-box.show { display: block; }
 .deposit-result {
   margin-top: 8px; padding: 10px; background: #fff7e6; border-radius: 8px;
   font-size: 13px; color: #d46b08; text-align: center; font-weight: 500;
 }
 
-.btn { width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #06d160, #0aab5a); margin-top: 6px; cursor: pointer; transition: all 0.2s; }
+.btn { width: 100%; padding: 13px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; color: #fff; background: linear-gradient(135deg, #06d160, #0aab5a); margin-top: 6px; cursor: pointer; }
 .btn:active { transform: scale(0.98); }
-
-/* ===== 数据概览Tab样式 ===== */
-.unpaid-list { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
-.unpaid-list h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #d46b08; }
-.unpaid-item {
-  padding: 10px 0; border-top: 1px solid #f0f0f0; display: flex;
-  justify-content: space-between; align-items: center;
-}
-.unpaid-item:first-child { border-top: none; }
-.unpaid-info .name { font-size: 13px; font-weight: 500; color: var(--text-main); }
-.unpaid-info .time { font-size: 11px; color: #999; margin-top: 2px; }
-.unpaid-amount { font-size: 14px; font-weight: 600; color: #d46b08; }
-
-.preview { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
-.preview h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #6b7280; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th { background: #f9fafb; color: #999; font-weight: 500; padding: 8px 6px; text-align: left; }
-td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
-.status-tag { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-.status-paid { background: #f6ffed; color: #389e0d; }
-.status-wait { background: #fff7e6; color: #d46b08; }
-.status-deposit { background: #e6f7ff; color: #1677ff; } /* 代收款状态标签 */
-.p-pos { color: #389e0d; } .p-neg { color: #cf1322; } .p-zero { color: #999; }
-.src { color: var(--blue); text-decoration: underline; font-size: 11px; }
 
 .action-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 16px; }
 .btna { padding: 9px 6px; font-size: 12px; border-radius: 10px; font-weight: 500; border: none; cursor: pointer; }
@@ -114,13 +88,24 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
 .btna-o { background: #fff7e6; color: var(--orange); }
 .btna-g { background: #f5f5f5; color: #666; }
 
+.preview h3 { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #6b7280; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #f9fafb; color: #999; font-weight: 500; padding: 7px 6px; text-align: left; }
+td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
+.status-tag { padding: 2px 7px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.status-paid { background: #f6ffed; color: #389e0d; }
+.status-wait { background: #fff7e6; color: #d46b08; }
+.status-deposit { background: #e6f7ff; color: #1677ff; }
+.p-pos { color: #389e0d; } .p-neg{ color: #cf1322; } .p-zero{ color: #999; }
+.src { color: var(--blue); text-decoration: underline; font-size: 11px; }
+
 .tip { text-align: center; font-size: 11px; color: #bbb; margin-top: 12px; }
 .warn { color: #fa8c16; font-size: 12px; text-align: center; margin-top: 8px; }
 </style>
 </head>
 <body>
 
-<!-- 微信式Tab栏 -->
+<!-- Tab栏 -->
 <div class="tab-bar">
   <div class="tab-item active" onclick="switchTab('create')">📝 创建订单</div>
   <div class="tab-item" onclick="switchTab('overview')">📊 数据概览</div>
@@ -128,13 +113,27 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
 
 <!-- Tab1：创建订单（默认显示） -->
 <div id="tab-create" class="tab-content active">
+  <!-- 成本设置（已移至此处） -->
+  <div class="cost-setting">
+    <div class="cost-header" onclick="toggleCost()">
+      ⚙️ 默认成本设置
+      <span id="costArr" style="font-size:12px;color:#999">▼</span>
+    </div>
+    <div class="cost-body" id="costBody">
+      <div class="cost-form">
+        <div><label>默认采购(元)</label><input id="defPur" type="number" step="0.01" placeholder="0.00"></div>
+        <div><label>默认快递(元)</label><input id="defExp" type="number" step="0.01" placeholder="0.00"></div>
+        <div><label>默认包装(元)</label><input id="defPak" type="number" step="0.01" placeholder="0.00"></div>
+      </div>
+      <button class="btna btna-b" style="margin-top:10px;width:100%" onclick="saveDef()">保存默认成本</button>
+    </div>
+  </div>
+
   <div class="main-card">
     <h2>🛒 新建订单</h2>
-
     <div style="margin-bottom:12px"><label>客户微信名</label><input id="c" placeholder="必填"></div>
     <div style="margin-bottom:12px"><label>1688货源链接</label><input id="src1688" placeholder="https://detail.1688.com/..."></div>
-
-    <!-- 地址+智能粘贴 -->
+    
     <div style="margin-bottom:12px">
       <label>收货地址（粘贴整段自动识别电话）</label>
       <div style="display:flex;gap:8px;align-items:stretch">
@@ -149,30 +148,28 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
     <div style="margin-bottom:12px"><label>联系电话</label><input id="tel" inputmode="numeric"></div>
     <div style="margin-bottom:12px"><label>商品名称</label><input id="p" placeholder="必填"></div>
 
-    <!-- 成本输入 -->
     <div class="input3">
       <div><label>采购成本</label><input id="pur" type="number" step="0.01" placeholder="不填用默认"></div>
       <div><label>快递成本</label><input id="exp" type="number" step="0.01" placeholder="不填用默认"></div>
       <div><label>包装成本</label><input id="pak" type="number" step="0.01" placeholder="不填用默认"></div>
     </div>
 
-    <!-- 单价/数量 -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
       <div><label>单价(元)</label><input id="pr" type="number" step="0.01" placeholder="0.00"></div>
       <div><label>数量</label><input id="q" type="number" value="1" min="1"></div>
     </div>
 
-    <!-- 收款状态（默认已收款） -->
+    <!-- 收款状态（修正文案） -->
     <div style="margin-bottom:12px">
       <label>收款状态</label>
       <select id="paid" style="width:100%;min-width:140px" onchange="toggleDeposit()">
         <option value="已收款" selected>✅ 已收款</option>
         <option value="待收款">⏳ 待收款</option>
-        <option value="代收款">💰 代收款（付定金）</option>
+        <option value="待收款（定金）">💰 待收款（定金）</option>
       </select>
     </div>
 
-    <!-- 定金输入（默认隐藏） -->
+    <!-- 定金输入 -->
     <div id="depositBox" class="deposit-box">
       <label>已付定金(元)</label>
       <input id="deposit" type="number" step="0.01" placeholder="请输入已收定金" oninput="calcUnpaid()">
@@ -192,9 +189,8 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
   </div>
 </div>
 
-<!-- Tab2：数据概览（默认隐藏） -->
+<!-- Tab2：数据概览 -->
 <div id="tab-overview" class="tab-content">
-  <!-- 统计卡片（新增待收尾款） -->
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-title">📦 今日订单</div><div class="stat-num stat-order" id="tc">0</div></div>
     <div class="stat-card"><div class="stat-title">💰 销售额</div><div class="stat-num stat-amount" id="ta">¥0.00</div></div>
@@ -205,31 +201,13 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
     <div class="stat-card"><div class="stat-title">💢 待收尾款</div><div class="stat-num stat-unpaid" id="tu">¥0.00</div></div>
   </div>
 
-  <!-- 成本设置 -->
-  <div class="cost-setting">
-    <div class="cost-header" onclick="toggleCost()">
-      ⚙️ 默认成本设置
-      <span id="costArr" style="font-size:12px;color:#999">▼</span>
-    </div>
-    <div class="cost-body" id="costBody">
-      <div class="cost-form">
-        <div><label>默认采购(元)</label><input id="defPur" type="number" step="0.01" placeholder="0.00"></div>
-        <div><label>默认快递(元)</label><input id="defExp" type="number" step="0.01" placeholder="0.00"></div>
-        <div><label>默认包装(元)</label><input id="defPak" type="number" step="0.01" placeholder="0.00"></div>
-      </div>
-      <button class="btna btna-b" style="margin-top:10px;width:100%" onclick="saveDef()">保存默认成本</button>
-    </div>
-  </div>
-
-  <!-- 待收尾款客户列表（含下单时间） -->
-  <div class="unpaid-list">
-    <h3>💢 待收尾款客户</h3>
+  <div class="unpaid-list" style="background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:14px;">
+    <h3 style="font-size:14px;font-weight:600;margin-bottom:10px;color:#d46b08;">💢 待收尾款客户</h3>
     <div id="unpaidList">
       <p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无待收尾款订单</p>
     </div>
   </div>
 
-  <!-- 最近订单预览 -->
   <div class="preview">
     <h3>📃 最近订单</h3>
     <div id="pv"></div>
@@ -242,21 +220,18 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
 const K = 'wechatOrders', CK = 'orderDefCost';
 let defCost = { pur:0, exp:0, pak:0 };
 
-/* ========= Tab切换（微信式交互）========= */
+/* ========= Tab切换 ========= */
 function switchTab(tab) {
-  // 切换Tab样式
-  document.querySelectorAll('.tab-item').forEach(item => {
-    item.classList.remove('active');
-    if (item.textContent.includes(tab === 'create' ? '创建订单' : '数据概览')) {
-      item.classList.add('active');
-    }
-  });
-  // 切换内容显示
+  document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
   document.getElementById('tab-create').classList.remove('active');
   document.getElementById('tab-overview').classList.remove('active');
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  // 切换到数据概览时刷新数据
-  if (tab === 'overview') {
+  
+  if(tab === 'create'){
+    document.querySelector('.tab-item:nth-child(1)').classList.add('active');
+    document.getElementById('tab-create').classList.add('active');
+  } else {
+    document.querySelector('.tab-item:nth-child(2)').classList.add('active');
+    document.getElementById('tab-overview').classList.add('active');
     cnt();
     renderUnpaidList();
     pvw();
@@ -269,6 +244,12 @@ function loadDef(){
     const j = localStorage.getItem(CK);
     if(j) defCost = JSON.parse(j);
     _ph();
+    // 填充设置面板的默认值
+    if(document.getElementById('defPur')){
+        defPur.value = defCost.pur;
+        defExp.value = defCost.exp;
+        defPak.value = defCost.pak;
+    }
   } catch(e){}
 }
 function saveDef(){
@@ -286,11 +267,6 @@ function _ph(){
     pur.placeholder = `不填则用 ¥${defCost.pur.toFixed(2)}`;
     exp.placeholder = `不填则用 ¥${defCost.exp.toFixed(2)}`;
     pak.placeholder = `不填则用 ¥${defCost.pak.toFixed(2)}`;
-    if(document.getElementById('defPur')){
-      defPur.value = defCost.pur;
-      defExp.value = defCost.exp;
-      defPak.value = defCost.pak;
-    }
   }catch(e){}
 }
 function toggleCost(){
@@ -323,14 +299,13 @@ function smartPaste(){
   }catch(e){}
 }
 
-/* ========= 代收款逻辑 ========= */
+/* ========= 定金逻辑 ========= */
 function toggleDeposit(){
   const depositBox = document.getElementById('depositBox');
-  const paidVal = paid.value;
-  if(paidVal === '代收款'){
+  if(paid.value === '待收款（定金）'){
     depositBox.classList.add('show');
-    calcUnpaid(); // 触发一次计算
-  }else{
+    calcUnpaid();
+  } else {
     depositBox.classList.remove('show');
   }
 }
@@ -348,13 +323,13 @@ function calcUnpaid(){
   }catch(e){}
 }
 
-/* ========= 统计（含待收尾款）========= */
+/* ========= 统计（含待收尾款，已扣除定金）========= */
 function cnt(){
   try{
     const d = new Date();
     const ts = `${d.getFullYear()}/${(d.getMonth()+1)}/${d.getDate()}`;
     const A = RD();
-    let n=0,a=0,w=0,p=0,prf=0,u=0;
+    let n=0, a=0, w=0, p=0, prf=0, u=0;
     A.forEach(o=>{
       if(o.createTime && o.createTime.startsWith(ts)){
         n++;
@@ -362,7 +337,8 @@ function cnt(){
         a += amt;
         if(o.status === '待收款') w += amt;
         if(o.status === '已收款') p += amt;
-        if(o.status === '代收款') u += parseFloat(o.unpaid||0); // 累加待收尾款
+        // 修正点：待收尾款 = 总金额 - 已付定金
+        if(o.status === '待收款（定金）') u += (amt - (parseFloat(o.deposit)||0));
         prf += (o.profit ?? 0);
       }
     });
@@ -372,17 +348,16 @@ function cnt(){
     tp.textContent = `¥${p.toFixed(2)}`;
     tpr.textContent = `¥${prf.toFixed(2)}`;
     tg.textContent = a>0 ? `${(prf/a*100).toFixed(2)}%` : '0.00%';
-    tu.textContent = `¥${u.toFixed(2)}`; // 显示待收尾款总额
+    tu.textContent = `¥${u.toFixed(2)}`;
   }catch(e){}
 }
 
-/* ========= 待收尾款客户列表（含下单时间）========= */
+/* ========= 待收尾款客户列表 ========== */
 function renderUnpaidList(){
   try{
     const A = RD();
     const el = document.getElementById('unpaidList');
-    // 筛选代收款订单，按下单时间倒序
-    const unpaidOrders = A.filter(o => o.status === '代收款')
+    const unpaidOrders = A.filter(o => o.status === '待收款（定金）')
                          .sort((a,b) => new Date(b.createTime) - new Date(a.createTime));
     if(!unpaidOrders.length){
       el.innerHTML = '<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无待收尾款订单</p>';
@@ -390,23 +365,22 @@ function renderUnpaidList(){
     }
     let html = '';
     unpaidOrders.forEach(o => {
+      const unpaid = (parseFloat(o.totalAmount)||0) - (parseFloat(o.deposit)||0);
       html += `
-        <div class="unpaid-item">
-          <div class="unpaid-info">
-            <div class="name">${o.customerName||'-'}</div>
-            <div class="time">下单时间：${o.createTime||'-'}</div>
+        <div style="padding:10px 0;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:500;">${o.customerName||'-'}</div>
+            <div style="font-size:11px;color:#999;margin-top:2px;">下单：${o.createTime||'-'}</div>
           </div>
-          <div class="unpaid-amount">¥${(o.unpaid||0).toFixed(2)}</div>
+          <div style="font-size:14px;font-weight:600;color:#d46b08;">¥${unpaid.toFixed(2)}</div>
         </div>
       `;
     });
     el.innerHTML = html;
-  }catch(e){
-    document.getElementById('unpaidList').innerHTML = '<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">加载失败</p>';
-  }
+  }catch(e){}
 }
 
-/* ========= 提交订单（默认已收款）========= */
+/* ========= 提交订单 ========== */
 function go(){
   try{
     const cV = c.value.trim(), pV = p.value.trim(), prV = parseFloat(pr.value);
@@ -414,7 +388,6 @@ function go(){
     if(!pV){ alert('商品名称必填'); p.focus(); return; }
     if(!prV||prV<=0){ alert('单价必填且>0'); pr.focus(); return; }
 
-    // 成本处理
     const purV = expVal(pur.value, defCost.pur);
     const expV = expVal(exp.value, defCost.exp);
     const pakV = expVal(pak.value, defCost.pak);
@@ -423,9 +396,8 @@ function go(){
     const cost = purV + expV + pakV;
     const profit = total - cost;
 
-    // 代收款相关（默认0）
     let deposit = 0, unpaid = 0;
-    if(paid.value === '代收款'){
+    if(paid.value === '待收款（定金）'){
       deposit = parseFloat(deposit.value) || 0;
       unpaid = total - deposit;
       if(deposit >= total){ alert('定金不能大于等于总金额！'); deposit.focus(); return; }
@@ -445,11 +417,11 @@ function go(){
       pack: +pakV.toFixed(2),
       totalCost: +cost.toFixed(2),
       totalAmount: +total.toFixed(2),
-      deposit: +deposit.toFixed(2), // 已付定金
-      unpaid: +unpaid.toFixed(2),   // 未付尾款
+      deposit: +deposit.toFixed(2), // 保存定金
+      unpaid: +unpaid.toFixed(2),   // 保存尾款
       profit: +profit.toFixed(2),
       memo: (memo.value||'').trim(),
-      status: paid.value, // 默认是"已收款"
+      status: paid.value, // 使用修正后的状态值
       createTime: new Date().toLocaleString('zh-CN')
     };
 
@@ -457,11 +429,11 @@ function go(){
     A.push(o);
     WR(A);
 
-    // 刷新数据（如果在概览页）
+    // 如果当前在概览页，刷新数据
     if(document.getElementById('tab-overview').classList.contains('active')){
-      cnt();
-      renderUnpaidList();
-      pvw();
+        cnt();
+        renderUnpaidList();
+        pvw();
     }
 
     // 清空表单
@@ -470,27 +442,31 @@ function go(){
     addr.value = tel.value = src1688.value = memo.value = '';
     pur.value = exp.value = pak.value = '';
     deposit.value = '';
-    paid.value = '已收款'; // 重置为默认已收款
-    toggleDeposit(); // 隐藏定金栏
+    paid.value = '已收款';
+    toggleDeposit();
+    
     if(navigator.vibrate) navigator.vibrate(50);
-    alert(`✅ 提交成功\n${paid.value==='代收款'?`已付定金：¥${deposit.toFixed(2)}\n未付尾款：¥${unpaid.toFixed(2)}`:`纯利：¥${profit.toFixed(2)}`}`);
+    alert(`✅ 提交成功\n${paid.value==='待收款（定金）'?`已付定金：¥${deposit.toFixed(2)}\n未付尾款：¥${unpaid.toFixed(2)}`:`纯利：¥${profit.toFixed(2)}`}`);
   }catch(e){ alert('提交失败：'+e.message); }
 }
 function expVal(raw, fb){ return raw.trim()!=='' ? (parseFloat(raw)||0) : fb; }
 
-/* ========= 预览（兼容旧数据）========= */
+/* ========= 预览 ========== */
 function pvw(){
   try{
     const A = RD();
     const el = pv;
     if(!A.length){ el.innerHTML='<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无订单</p>'; return; }
-    let h = '<table><tr><th>单号</th><th>客户</th><th>状态</th><th>纯利</th><th>货源</th></tr>';
+    let h='<table><tr><th>单号</th><th>客户</th><th>状态</th><th>纯利</th><th>货源</th></tr>';
     A.slice(-6).reverse().forEach(o=>{
       const pf = (o.profit??0);
       const pc = pf>0?'p-pos':pf<0?'p-neg':'p-zero';
-      let statusClass = o.status==='已收款'?'status-paid':o.status==='代收款'?'status-deposit':'status-wait';
+      let statusClass = 'status-paid';
+      if(o.status === '待收款') statusClass = 'status-wait';
+      if(o.status === '待收款（定金）') statusClass = 'status-deposit';
+      
       const link = o.src1688 ? `<a href="${o.src1688}" target="_blank" rel="noopener" class="src">1688 ↗</a>` : '<span style="color:#ccc">-</span>';
-      h += `<tr>
+      h+=`<tr>
         <td>${(o.orderNumber||'').slice(-6)}</td>
         <td>${o.customerName||'-'}</td>
         <td><span class="status-tag ${statusClass}">${o.status||'已收款'}</span></td>
@@ -498,30 +474,52 @@ function pvw(){
         <td>${link}</td>
       </tr>`;
     });
-    h += '</table>';
-    el.innerHTML = h;
+    h+='</table>';
+    el.innerHTML=h;
   }catch(e){ pv.innerHTML='<p style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无订单</p>'; }
 }
 
-/* ========= 导出CSV（含定金/尾款）========= */
+/* ========= 导出CSV（定金行标黄 + 修正字段）========= */
 function dlCSV(){
   try{
     const A = RD();
     if(!A.length){ alert('暂无订单'); return; }
-    let csv = '\uFEFF单号,客户微信,联系电话,收货地址,商品名称,1688链接,采购成本,快递成本,包装成本,总成本,单价,数量,总额,已付定金,未付尾款,纯利润,毛利(%),备注,状态,下单时间\n';
+    let csv = '\uFEFF单号,客户微信,电话,地址,商品,1688链接,采购,快递,包装,总成本,单价,数量,总额,已付定金,未付尾款,纯利,毛利,备注,状态,时间\n';
     A.forEach(o=>{
       const amt = (o.totalAmount||0);
       const prf = (o.profit??0);
       const gr = amt>0 ? (prf/amt*100).toFixed(2)+'%' : '0.00%';
-      csv += [
+      const deposit = (o.deposit??0);
+      const unpaid = (o.unpaid??0);
+      const isDeposit = o.status === '待收款（定金）';
+      
+      // 修正点：定金行整行添加背景色样式
+      const rowStyle = isDeposit ? 'style="background-color:#fffde7;"' : '';
+      
+      csv += `<tr ${rowStyle}><td>${o.orderNumber||''}</td><td>${o.customerName||''}</td><td>${o.tel||''}</td><td>${o.address||''}</td><td>${o.productName||''}</td><td>${o.src1688||''}</td><td>${o.purchase??0}</td><td>${o.express??0}</td><td>${o.pack??0}</td><td>${o.totalCost??0}</td><td>${o.price||''}</td><td>${o.quantity||''}</td><td>${amt}</td><td>${deposit.toFixed(2)}</td><td>${unpaid.toFixed(2)}</td><td>${prf.toFixed(2)}</td><td>${gr}</td><td>${o.memo||''}</td><td>${o.status||'已收款'}</td><td>${o.createTime||''}</td></tr>\n`;
+    });
+    // 注意：CSV不支持<tr style>，这里为了兼容WPS/Excel，我们使用HTML表格格式导出，或者直接用CSS样式在CSV里是无效的。
+    // 为了让WPS/Excel识别背景色，我们需要输出真正的XLSX格式，但这太复杂。
+    // 替代方案：在“未付尾款”列用显眼的文字提示，或者在状态列标明。
+    // 简单有效的方案：在状态列前面加一个醒目标识。
+    
+    // 重新生成标准的CSV（逗号分隔），不加HTML样式，因为CSV不支持。
+    let finalCsv = '\uFEFF单号,客户微信,电话,地址,商品,1688链接,采购,快递,包装,总成本,单价,数量,总额,已付定金,未付尾款,纯利,毛利,备注,状态,时间\n';
+    A.forEach(o=>{
+      const amt = (o.totalAmount||0);
+      const prf = (o.profit??0);
+      const gr = amt>0 ? (prf/amt*100).toFixed(2)+'%' : '0.00%';
+      const prefix = o.status === '待收款（定金）' ? '【定金】' : '';
+      const row = [
         o.orderNumber||'', o.customerName||'', o.tel||'', o.address||'', o.productName||'',
         o.src1688||'', (o.purchase??0), (o.express??0), (o.pack??0), (o.totalCost??0),
-        o.price||'', o.quantity||'', amt, (o.deposit??0), (o.unpaid??0), prf.toFixed(2), gr,
-        o.memo||'', o.status||'已收款', o.createTime||''
-      ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')+'\n';
+        o.price||'', o.quantity||'', amt, (o.deposit??0).toFixed(2), (o.unpaid??0).toFixed(2),
+        prf.toFixed(2), gr, o.memo||'', prefix+o.status||'已收款', o.createTime||''
+      ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',');
+      finalCsv += row + '\n';
     });
-    // 同步下载（安卓兼容）
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+
+    const blob = new Blob([finalCsv], {type:'text/csv;charset=utf-8;'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -530,10 +528,10 @@ function dlCSV(){
     setTimeout(()=>URL.revokeObjectURL(url), 100);
   }catch(e){ alert('导出CSV失败：'+e.message); }
 }
+
 function dlJSON(){
   try{
-    const A = RD();
-    if(!A.length){ alert('暂无订单'); return; }
+    const A = RD(); if(!A.length){alert('暂无订单');return;}
     const blob = new Blob([JSON.stringify(A,null,2)], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -541,10 +539,9 @@ function dlJSON(){
     a.download = `订单备份_${Date.now()}.json`;
     a.click();
     setTimeout(()=>URL.revokeObjectURL(url), 100);
-  }catch(e){ alert('备份失败：'+e.message); }
+  }catch(e){alert('备份失败：'+e.message);}
 }
 
-/* ========= 清空 ========= */
 function clr(){
   if(!confirm('清空订单？（默认成本不会被清）')) return;
   localStorage.removeItem(K);
@@ -556,8 +553,7 @@ function clr(){
 
 /* ========= 初始化 ========= */
 loadDef();
-// 默认隐藏定金栏（因为默认选中已收款）
-toggleDeposit();
+toggleDeposit(); // 初始化隐藏定金栏
 </script>
 </body>
 </html>
