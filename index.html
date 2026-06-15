@@ -4,23 +4,33 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 <title>微信订单管家</title>
-
 <link rel="manifest" href="/wx-order/manifest.json">
 <meta name="theme-color" content="#07c160">
 
 <style>
 :root {
-  --primary: #07c160; --bg: #f4f6f8; --card: #ffffff;
-  --text-main: #1f2937; --radius: 16px;
+  --primary: #07c160; --blue: #1677ff; --orange: #fa8c16;
+  --bg: #f4f6f8; --card: #ffffff; --text-main: #1f2937;
+  --radius: 16px; --shadow: 0 10px 30px rgba(0,0,0,0.06);
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
   max-width: 540px; margin: 0 auto; padding: 12px; background: var(--bg);
 }
-.main-card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); margin-bottom: 16px; }
+
+/* 统计卡片 */
+.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.stat-card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.stat-title { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+.stat-num { font-size: 22px; font-weight: 700; }
+.stat-order { color: var(--blue); } .stat-amount { color: var(--primary); }
+.stat-wait { color: var(--orange); } .stat-paid { color: #52c41a; }
+
+/* 主卡片 */
+.main-card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
 h2 { margin: 0 0 20px; font-size: 20px; font-weight: 600; text-align: center; }
-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
 input, textarea, select {
   width: 100%; padding: 12px 14px; border: 1px solid #e5e7eb;
   border-radius: 10px; font-size: 15px; background: #f9fafb;
@@ -32,112 +42,284 @@ textarea { min-height: 44px; resize: vertical; }
   background: linear-gradient(135deg, #06d160, #0aab5a); margin-top: 8px;
 }
 .btn:active { transform: scale(0.98); }
+
+/* 操作栏 */
+.action-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
+.btn-action { padding: 10px 8px; font-size: 12px; border-radius: 10px; font-weight: 500; border: none; cursor: pointer; }
+.btn-blue { background: #eef4ff; color: var(--blue); }
+.btn-orange { background: #fff7e6; color: var(--orange); }
+.btn-gray { background: #f5f5f5; color: #666; }
+
+/* 预览表 */
+.preview { margin-top: 20px; }
+.preview h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #6b7280; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { background: #f9fafb; color: #999; font-weight: 500; padding: 8px 6px; text-align: left; }
+td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
+.status-tag { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+.status-wait { background: #fff7e6; color: #d46b08; }
+.status-paid { background: #f6ffed; color: #389e0d; }
+
 .tip { text-align: center; font-size: 11px; color: #bbb; margin-top: 16px; }
 </style>
 </head>
 <body>
 
+<!-- 当日统计 -->
+<div class="stats-grid">
+  <div class="stat-card"><div class="stat-title">📦 今日订单</div><div class="stat-num stat-order" id="todayCount">0</div></div>
+  <div class="stat-card"><div class="stat-title">💰 今日销售额</div><div class="stat-num stat-amount" id="todayAmount">¥0.00</div></div>
+  <div class="stat-card"><div class="stat-title">⏳ 待收款</div><div class="stat-num stat-wait" id="todayWait">¥0.00</div></div>
+  <div class="stat-card"><div class="stat-title">✅ 已收款</div><div class="stat-num stat-paid" id="todayPaid">¥0.00</div></div>
+</div>
+
+<!-- 订单录入 -->
 <div class="main-card">
   <h2>🛒 新建订单</h2>
-
-  <div class="form-group"><label>客户微信名</label><input id="c" placeholder="必填"/></div>
-
+  
+  <div class="form-group"><label>客户微信名</label><input id="c" placeholder="必填，例：小明"/></div>
+  
+  <!-- 智能粘贴地址 -->
   <div class="form-group">
-    <label>收货地址</label>
-    <textarea id="addr" rows="2" placeholder="粘贴整段自动识别电话"
-      onpaste="setTimeout(doSmartPaste,0)"></textarea>
+    <label>收货地址（粘贴整段自动识别电话）</label>
+    <div style="display:flex;gap:8px;align-items:stretch">
+      <textarea id="addr" rows="2" style="flex:1" placeholder="例：浙江省杭州市...张先生150****1234"
+        onpaste="setTimeout(doSmartPaste,0)"></textarea>
+      <div style="display:flex;flex-direction:column;justify-content:center">
+        <button type="button" onclick="doSmartPaste()" style="padding:7px 10px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-size:11px;font-weight:600;cursor:pointer;">📋 识别</button>
+      </div>
+    </div>
   </div>
 
-  <div class="form-group"><label>联系电话</label><input id="tel" inputmode="numeric"/></div>
-  <div class="form-group"><label>商品名称</label><input id="p" placeholder="必填"/></div>
-
+  <div class="form-group"><label>联系电话</label><input id="tel" type="tel" inputmode="numeric" placeholder="自动识别/手动补"/></div>
+  <div class="form-group"><label>商品名称</label><input id="p" placeholder="必填，例：头层牛皮钱包"/></div>
+  
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-    <div class="form-group"><label>单价</label><input id="pr" type="number" step="0.01"/></div>
-    <div class="form-group"><label>数量</label><input id="q" type="number" value="1"/></div>
+    <div class="form-group"><label>单价(元)</label><input id="pr" type="number" step="0.01" placeholder="0.00"/></div>
+    <div class="form-group"><label>数量</label><input id="q" type="number" value="1" min="1"/></div>
   </div>
-
-  <div class="form-group"><label>备注</label><input id="memo"/></div>
-
+  
+  <div class="form-group"><label>订单备注</label><input id="memo" placeholder="颜色/尺寸/特殊要求"/></div>
   <div class="form-group">
     <label>收款状态</label>
     <select id="paid">
-      <option value="待收款">待收款</option>
-      <option value="已收款">已收款</option>
+      <option value="待收款">⏳ 待收款</option>
+      <option value="已收款">✅ 已收款</option>
     </select>
   </div>
 
   <button class="btn" onclick="go()">📋 提交订单</button>
-  <p class="tip">数据仅保存在本机，导出后建议备份</p>
+
+  <!-- 批量操作 -->
+  <div class="action-bar">
+    <button class="btn-action btn-blue" onclick="downloadCSV()">📥 导出CSV</button>
+    <button class="btn-action btn-orange" onclick="downloadJSON()">💾 备份</button>
+    <button class="btn-action btn-gray" onclick="clearOrders()">🗑 清空</button>
+  </div>
+</div>
+
+<!-- 最近订单预览 -->
+<div class="main-card preview">
+  <h3>📃 最近订单</h3>
+  <div id="preview"></div>
+  <p class="tip">数据仅保存在本机，导出后建议定期备份</p>
 </div>
 
 <script>
+// ==================== 基础工具（容错拉满）====================
 const KEY = 'wechatOrders';
-
-function safeLoad(){ try { return JSON.parse(localStorage.getItem(KEY)||'[]'); } catch(e){ return []; } }
-function safeSave(arr){ try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch(e){ alert('存储失败，可能空间不足'); } }
-
-/* 智能粘贴 */
-function parseAddressText(raw){
-  if(!raw) return {phone:'',restAddress:raw};
-  let s = raw.replace(/[\r\n]/g,' ').replace(/　/g,' ').trim();
-  let phone = '';
-  const m = s.match(/(1[3-9]\d{9})/);
-  if(m){ phone = m[1]; s = s.replace(phone,''); }
-  return { phone: phone, restAddress: s.replace(/\s+/g,' ').trim() };
-}
-function doSmartPaste(){
-  const addrEl = document.getElementById('addr');
-  const telEl = document.getElementById('tel');
-  const r = parseAddressText(addrEl.value);
-  if(r.phone) telEl.value = r.phone;
-  addrEl.value = r.restAddress;
-}
-
-/* 提交订单（最简、最稳） */
-function go(){
+const safeLoad = () => {
+  try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
+  catch(e) { return []; }
+};
+const safeSave = (arr) => {
+  try { localStorage.setItem(KEY, JSON.stringify(arr)); }
+  catch(e) { alert('存储失败，可能手机空间不足'); }
+};
+const todayStr = () => {
   try {
-    const c = document.getElementById('c').value.trim();
-    const p = document.getElementById('p').value.trim();
-    const pr = parseFloat(document.getElementById('pr').value);
+    const d = new Date();
+    return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+  } catch(e) { return ''; }
+};
+const triggerDown = (blob, name) => {
+  try {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  } catch(e) { alert('下载失败：' + e.message); }
+};
 
-    if(!c){ alert('请填写客户微信名'); return; }
-    if(!p){ alert('请填写商品名称'); return; }
-    if(!pr || pr<=0){ alert('请填写正确的单价'); return; }
+// ==================== 智能粘贴（兼容你的测试格式）====================
+const parseAddressText = (raw) => {
+  try {
+    if (!raw) return {phone:'', restAddress:raw};
+    let s = raw.replace(/[\r\n]/g,' ').replace(/　/g,' ').trim();
+    let phone = '';
+    const m = s.match(/(1[3-9]\d{9})/);
+    if (m) { phone = m[1]; s = s.replace(phone, ''); }
+    s = s.replace(/地址[：:\s]*/i, '').replace(/^[，,：:、\s]+/, '').replace(/[，,：:、\s]+$/, '').replace(/\s{2,}/g,' ').trim();
+    return { phone, restAddress: s };
+  } catch(e) { return {phone:'', restAddress:raw}; }
+};
+const doSmartPaste = () => {
+  try {
+    const addrEl = document.getElementById('addr');
+    const telEl = document.getElementById('tel');
+    const r = parseAddressText(addrEl.value);
+    if (r.phone) telEl.value = r.phone;
+    addrEl.value = r.restAddress || addrEl.value;
+  } catch(e) {}
+};
 
+// ==================== 当日统计（故障不影响提交）====================
+const countToday = () => {
+  try {
+    const today = todayStr();
+    if (!today) return;
+    const orders = safeLoad();
+    let count=0, amount=0, wait=0, paid=0;
+    orders.forEach(o => {
+      if (o.createTime && o.createTime.startsWith(today)) {
+        count++; amount += parseFloat(o.totalAmount || 0);
+        if (o.status === '待收款') wait += parseFloat(o.totalAmount || 0);
+        if (o.status === '已收款') paid += parseFloat(o.totalAmount || 0);
+      }
+    });
+    document.getElementById('todayCount').textContent = count;
+    document.getElementById('todayAmount').textContent = `¥${amount.toFixed(2)}`;
+    document.getElementById('todayWait').textContent = `¥${wait.toFixed(2)}`;
+    document.getElementById('todayPaid').textContent = `¥${paid.toFixed(2)}`;
+  } catch(e) {}
+};
+
+// ==================== 提交订单（核心功能，绝对稳）====================
+const go = () => {
+  try {
+    // 取元素
+    const cEl = document.getElementById('c');
+    const pEl = document.getElementById('p');
+    const prEl = document.getElementById('pr');
+    const qEl = document.getElementById('q');
+    const addrEl = document.getElementById('addr');
+    const telEl = document.getElementById('tel');
+    const memoEl = document.getElementById('memo');
+    const paidEl = document.getElementById('paid');
+
+    // 校验必填
+    if (!cEl.value.trim()) { alert('请填写客户微信名'); cEl.focus(); return; }
+    if (!pEl.value.trim()) { alert('请填写商品名称'); pEl.focus(); return; }
+    const pr = parseFloat(prEl.value);
+    if (isNaN(pr) || pr <= 0) { alert('请填写正确的单价'); prEl.focus(); return; }
+
+    // 生成订单
     const o = {
-      orderNumber: 'WX' + Date.now(),
-      customerName: c,
-      address: document.getElementById('addr').value.trim(),
-      tel: document.getElementById('tel').value.trim(),
-      productName: p,
+      orderNumber: 'WX' + Date.now() + Math.floor(Math.random()*1000),
+      customerName: cEl.value.trim(),
+      address: addrEl.value.trim(),
+      tel: telEl.value.trim(),
+      productName: pEl.value.trim(),
       price: pr,
-      quantity: parseInt(document.getElementById('q').value)||1,
-      memo: document.getElementById('memo').value.trim(),
-      totalAmount: (pr * (parseInt(document.getElementById('q').value)||1)).toFixed(2),
+      quantity: parseInt(qEl.value) || 1,
+      memo: memoEl.value.trim(),
+      totalAmount: (pr * (parseInt(qEl.value) || 1)).toFixed(2),
       createTime: new Date().toLocaleString('zh-CN'),
-      status: document.getElementById('paid').value
+      status: paidEl.value
     };
 
+    // 保存
     const arr = safeLoad();
     arr.push(o);
     safeSave(arr);
 
+    // 更新界面（就算失败也不影响订单保存）
+    try { countToday(); renderPreview(); } catch(e) {}
+
+    // 清空表单
+    cEl.value = pEl.value = prEl.value = addrEl.value = telEl.value = memoEl.value = '';
+    qEl.value = '1';
+    paidEl.value = '待收款';
+
+    // 震动反馈
+    if (navigator.vibrate) navigator.vibrate(50);
     alert('✅ 订单提交成功');
 
-    // 清空
-    document.getElementById('c').value = '';
-    document.getElementById('p').value = '';
-    document.getElementById('pr').value = '';
-    document.getElementById('q').value = '1';
-    document.getElementById('addr').value = '';
-    document.getElementById('tel').value = '';
-    document.getElementById('memo').value = '';
-    document.getElementById('paid').value = '待收款';
+  } catch(e) { alert('提交失败：' + e.message); }
+};
 
-  } catch(e) {
-    alert('提交失败：' + e.message);
-  }
+// ==================== 导出功能（故障不影响录单）====================
+const downloadCSV = () => {
+  try {
+    const arr = safeLoad();
+    if (!arr.length) { alert('暂无订单'); return; }
+    let csv = '\uFEFF订单号,客户微信,联系电话,收货地址,商品,单价,数量,总额,备注,收款状态,下单时间\n';
+    arr.forEach(o => {
+      const row = [
+        o.orderNumber, o.customerName, o.tel||'', o.address, o.productName,
+        o.price, o.quantity, o.totalAmount, o.memo, o.status, o.createTime
+      ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
+      csv += row + '\n';
+    });
+    triggerDown(new Blob([csv],{type:'text/csv;charset=utf-8'}), `微信订单_${Date.now()}.csv`);
+  } catch(e) { alert('导出CSV失败：' + e.message); }
+};
+
+const downloadJSON = () => {
+  try {
+    const arr = safeLoad();
+    if (!arr.length) { alert('暂无订单'); return; }
+    triggerDown(new Blob([JSON.stringify(arr,null,2)],{type:'application/json'}), `订单备份_${Date.now()}.json`);
+  } catch(e) { alert('导出备份失败：' + e.message); }
+};
+
+const clearOrders = () => {
+  try {
+    if (!confirm('确定清空本地订单？（请先确保已导出备份）')) return;
+    localStorage.removeItem(KEY);
+    countToday();
+    renderPreview();
+    alert('✅ 本地订单已清空');
+  } catch(e) { alert('清空失败：' + e.message); }
+};
+
+// ==================== 预览渲染（故障不影响其他功能）====================
+const renderPreview = () => {
+  try {
+    const arr = safeLoad();
+    const el = document.getElementById('preview');
+    if (!arr.length) {
+      el.innerHTML = '<p style="color:#bbb;text-align:center;font-size:13px;">暂无订单</p>';
+      return;
+    }
+    let html = '<table><tr><th>订单号</th><th>客户</th><th>金额</th><th>状态</th></tr>';
+    arr.slice(-5).reverse().forEach(o => {
+      const tagClass = o.status === '已收款' ? 'status-paid' : 'status-wait';
+      html += `<tr>
+        <td>${o.orderNumber.slice(-6)}</td>
+        <td>${o.customerName}</td>
+        <td>¥${o.totalAmount}</td>
+        <td><span class="status-tag ${tagClass}">${o.status}</span></td>
+      </tr>`;
+    });
+    html += '</table>';
+    el.innerHTML = html;
+  } catch(e) {}
+};
+
+// ==================== PWA注册（可选，失败不影响使用）====================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/wx-order/service-worker.js').catch(()=>{});
+  });
 }
+
+// 初始化
+countToday();
+renderPreview();
 </script>
 </body>
 </html>
