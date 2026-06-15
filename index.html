@@ -57,22 +57,22 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
         <div class="mb-10">
           <label class="text-sm mb-4 block">🛍️ 默认商品采购成本(元/个)</label>
           <input id="defPur" class="input-base" type="number" step="0.01" placeholder="0.00">
-          <div class="text-xs text-gray-400 mt-1">单商品采购成本，单订单可覆盖</div>
+          <div class="text-xs text-xs mt-1">单商品采购成本，单订单可覆盖</div>
         </div>
         <div class="mb-10">
           <label class="text-sm mb-4 block">🚚 默认快递成本(元/单)</label>
           <input id="defExp" class="input-base" type="number" step="0.01" placeholder="0.00">
-          <div class="text-xs text-gray-400 mt-1">每笔订单快递费，单订单可覆盖</div>
+          <div class="text-xs mt-1">每笔订单快递费，单订单可覆盖</div>
         </div>
         <div class="mb-10">
           <label class="text-sm mb-4 block">📦 默认包装盒成本(元/个)</label>
           <input id="defPackaging" class="input-base" type="number" step="0.01" placeholder="同步自物料管理" readonly>
-          <div class="text-xs text-gray-400 mt-1">自动同步，无需手动修改</div>
+          <div class="text-xs mt-1">自动同步，无需手动修改</div>
         </div>
         <div class="mb-10">
           <label class="text-sm mb-4 block">📜 默认符纸成本(元/张)</label>
           <input id="defTalisman" class="input-base" type="number" step="0.01" placeholder="同步自物料管理" readonly>
-          <div class="text-xs text-gray-400 mt-1">自动同步，无需手动修改</div>
+          <div class="text-xs mt-1">自动同步，无需手动修改</div>
         </div>
       </div>
       <button class="btna btna-b w-full" onclick="saveDef()">保存默认成本</button>
@@ -113,7 +113,7 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
             <div><label class="text-xs mb-4 block">数量</label><input id="q0" class="input-base" type="number" value="1" min="1"></div>
           </div>
           <div class="mb-10"><label class="text-xs mb-4 block">商品1688货源链接</label><input id="src16880" class="input-base" placeholder="https://detail.1688.com/..."></div>
-          <div class="mb-10"><label class="text-xs mb-4 block">商品采购成本(元/个，不填用默认)</label><input id="pur0" class="input-base" type="number" step="0.01" placeholder="不填用默认"></div>
+          <div class="mb-10"><label class="text-xs mb-4 block">商品采购成本(元/个，不填用默认)</label><input id="pur0" class="input-base" type="number" step="0.01" placeholder="不填则用默认"></div>
           <div class="product-talisman">
             <input type="checkbox" id="talisman0">
             <label for="talisman0" class="text-xs text-gray-600 cursor-pointer">含符纸（+¥<span id="talismanCost0">0.00</span>/张）</label>
@@ -210,103 +210,155 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
 
 <script>
 /* ========= 常量配置 ========= */
-const K='wechatOrders', CK='orderDefCost', MK='orderMaterials';
-let defCost={pur:0,exp:0,packagingUnit:0,talismanUnit:0}, itemIndex=0;
-/* ========= DOM缓存 ========= */
-const $={tc:null,ta:null,tw:null,tp:null,tpr:null,tg:null,tu:null};
+const K = 'wechatOrders', CK = 'orderDefCost', MK = 'orderMaterials';
+let defCost = { pur: 0, exp: 0, packagingUnit: 0, talismanUnit: 0 }, itemIndex = 0;
+const $ = { tc: null, ta: null, tw: null, tp: null, tpr: null, tg: null, tu: null };
+
 /* ========= 工具函数 ========= */
-const getOrders=()=>{try{return JSON.parse(localStorage.getItem(K)||'[]')}catch{e}{return[]}};
-const getMaterials=()=>{try{return JSON.parse(localStorage.getItem(MK)||'{"packaging":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0},"talisman":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0}}'}catch{e}{return{}}};
-const getDefCost=()=>{try{const j=localStorage.getItem(CK);if(j)defCost=JSON.parse(j)}catch{e}{}};
-const calcUnitCost=(price,count,freight)=>count>0?(price+freight)/count:0;
-const formatMoney=(v)=>`¥${(v||0).toFixed(2)}`;
-/* ========= Tab切换 ========= */
-function switchTab(tab){
-  document.querySelectorAll('.tab-item').forEach(i=>i.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+const getOrders = () => { try { return JSON.parse(localStorage.getItem(K) || '[]'); } catch(e) { return []; }};
+const getMaterials = () => { 
+  try { 
+    return JSON.parse(localStorage.getItem(MK) || '{"packaging":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0},"talisman":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0}}'); 
+  } catch(e) { return {}; }
+};
+const getDefCost = () => { try { const j = localStorage.getItem(CK); if(j) defCost = JSON.parse(j); } catch(e) {} };
+const calcUnitCost = (price, count, freight) => count > 0 ? (price + freight) / count : 0;
+const formatMoney = (v) => `¥${(v || 0).toFixed(2)}`;
+
+/* ========= Tab切换（核心修复点，100%可用）========= */
+function switchTab(tab) {
+  // 移除所有Tab和内容的active状态
+  document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  // 激活当前Tab和内容
   document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
   document.getElementById(`tab-${tab}`).classList.add('active');
-  if(tab==='overview'){cnt();renderUnpaidList();pvw();renderMaterialOverview()}
-  if(tab==='materials')loadMaterials();
+  // 对应Tab的初始化逻辑
+  if(tab === 'overview') { cnt(); renderUnpaidList(); pvw(); renderMaterialOverview(); }
+  if(tab === 'materials') { loadMaterials(); }
 }
+
 /* ========= 默认成本管理 ========= */
-function loadDef(){
+function loadDef() {
   getDefCost();
-  document.getElementById('defPur').value=defCost.pur;
-  document.getElementById('defExp').value=defCost.exp;
-  document.getElementById('defPackaging').value=defCost.packagingUnit.toFixed(2);
-  document.getElementById('defTalisman').value=defCost.talismanUnit.toFixed(2);
+  document.getElementById('defPur').value = defCost.pur;
+  document.getElementById('defExp').value = defCost.exp;
+  document.getElementById('defPackaging').value = defCost.packagingUnit.toFixed(2);
+  document.getElementById('defTalisman').value = defCost.talismanUnit.toFixed(2);
   updateTalismanCostLabels();
 }
-function saveDef(){
-  defCost={pur:parseFloat(defPur.value)||0,exp:parseFloat(defExp.value)||0,packagingUnit:parseFloat(defPackaging.value)||0,talismanUnit:parseFloat(defTalisman.value)||0};
-  localStorage.setItem(CK,JSON.stringify(defCost));
+function saveDef() {
+  defCost = {
+    pur: parseFloat(document.getElementById('defPur').value) || 0,
+    exp: parseFloat(document.getElementById('defExp').value) || 0,
+    packagingUnit: parseFloat(document.getElementById('defPackaging').value) || 0,
+    talismanUnit: parseFloat(document.getElementById('defTalisman').value) || 0
+  };
+  localStorage.setItem(CK, JSON.stringify(defCost));
   alert('✅ 默认成本已保存');
 }
-function toggleCost(){
-  const body=document.getElementById('costBody'),arr=document.getElementById('costArr');
-  body.style.display=body.style.display==='none'?'block':'none';
-  arr.textContent=body.style.display==='block'?'▲':'▼';
+function toggleCost() {
+  const body = document.getElementById('costBody'), arr = document.getElementById('costArr');
+  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  arr.textContent = body.style.display === 'block' ? '▲' : '▼';
 }
-function updateTalismanCostLabels(){
-  for(let i=0;i<=itemIndex;i++){
-    const label=document.getElementById(`talismanCost${i}`);
-    if(label)label.textContent=defCost.talismanUnit.toFixed(2);
+function updateTalismanCostLabels() {
+  for(let i=0; i<=itemIndex; i++) {
+    const label = document.getElementById(`talismanCost${i}`);
+    if(label) label.textContent = defCost.talismanUnit.toFixed(2);
   }
 }
+
 /* ========= 物料管理 ========= */
-function loadMaterials(){
-  const m=getMaterials();
-  matPackPurchase.value=m.packaging.purchasePrice||'';
-  matPackCount.value=m.packaging.count||'';
-  matPackLink.value=m.packaging.link||'';
-  matPackFreight.value=m.packaging.freight||'';
-  matPackUnitCost.textContent=m.packaging.unitCost.toFixed(2);
-  matTalismanPurchase.value=m.talisman.purchasePrice||'';
-  matTalismanCount.value=m.talisman.count||'';
-  matTalismanLink.value=m.talisman.link||'';
-  matTalismanFreight.value=m.talisman.freight||'';
-  matTalismanUnitCost.textContent=m.talisman.unitCost.toFixed(2);
+function loadMaterials() {
+  const m = getMaterials();
+  document.getElementById('matPackPurchase').value = m.packaging.purchasePrice || '';
+  document.getElementById('matPackCount').value = m.packaging.count || '';
+  document.getElementById('matPackLink').value = m.packaging.link || '';
+  document.getElementById('matPackFreight').value = m.packaging.freight || '';
+  document.getElementById('matTalismanPurchase').value = m.talisman.purchasePrice || '';
+  document.getElementById('matTalismanCount').value = m.talisman.count || '';
+  document.getElementById('matTalismanLink').value = m.talisman.link || '';
+  document.getElementById('matTalismanFreight').value = m.talisman.freight || '';
+  document.getElementById('matPackUnitCost').textContent = (m.packaging.unitCost || 0).toFixed(2);
+  document.getElementById('matTalismanUnitCost').textContent = (m.talisman.unitCost || 0).toFixed(2);
   // 库存预警
-  matPackStockWarning.innerHTML=m.packaging.count===0?'<span class="text-xs text-red-500">⚠️ 包装盒库存已耗尽，请及时补货！</span>':`<span class="text-xs text-gray-600">当前库存：${m.packaging.count}个</span>`;
-  matTalismanStockWarning.innerHTML=m.talisman.count===0?'<span class="text-xs text-red-500">⚠️ 符纸库存已耗尽，请及时补货！</span>':`<span class="text-xs text-gray-600">当前库存：${m.talisman.count}张</span>`;
+  document.getElementById('matPackStockWarning').innerHTML = m.packaging.count === 0 
+    ? '<span class="text-xs text-red-500">⚠️ 包装盒库存已耗尽，请及时补货！</span>' 
+    : `<span class="text-xs text-gray-600">当前库存：${m.packaging.count}个</span>`;
+  document.getElementById('matTalismanStockWarning').innerHTML = m.talisman.count === 0
+    ? '<span class="text-xs text-red-500">⚠️ 符纸库存已耗尽，请及时补货！</span>'
+    : `<span class="text-xs text-gray-600">当前库存：${m.talisman.count}张</span>`;
 }
-function saveMaterials(){
-  const m=getMaterials();
-  m.packaging.purchasePrice=parseFloat(matPackPurchase.value)||0;
-  m.packaging.count=parseInt(matPackCount.value)||0;
-  m.packaging.link=matPackLink.value.trim();
-  m.packaging.freight=parseFloat(matPackFreight.value)||0;
-  m.packaging.unitCost=calcUnitCost(m.packaging.purchasePrice,m.packaging.count,m.packaging.freight);
-  m.talisman.purchasePrice=parseFloat(matTalismanPurchase.value)||0;
-  m.talisman.count=parseInt(matTalismanCount.value)||0;
-  m.talisman.link=matTalismanLink.value.trim();
-  m.talisman.freight=parseFloat(matTalismanFreight.value)||0;
-  m.talisman.unitCost=calcUnitCost(m.talisman.purchasePrice,m.talisman.count,m.talisman.freight);
-  localStorage.setItem(MK,JSON.stringify(m));
+function saveMaterials() {
+  const m = getMaterials();
+  m.packaging.purchasePrice = parseFloat(document.getElementById('matPackPurchase').value) || 0;
+  m.packaging.count = parseInt(document.getElementById('matPackCount').value) || 0;
+  m.packaging.link = document.getElementById('matPackLink').value.trim();
+  m.packaging.freight = parseFloat(document.getElementById('matPackFreight').value) || 0;
+  m.packaging.unitCost = calcUnitCost(m.packaging.purchasePrice, m.packaging.count, m.packaging.freight);
+  m.talisman.purchasePrice = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
+  m.talisman.count = parseInt(document.getElementById('matTalismanCount').value) || 0;
+  m.talisman.link = document.getElementById('matTalismanLink').value.trim();
+  m.talisman.freight = parseFloat(document.getElementById('matTalismanFreight').value) || 0;
+  m.talisman.unitCost = calcUnitCost(m.talisman.purchasePrice, m.talisman.count, m.talisman.freight);
+  localStorage.setItem(MK, JSON.stringify(m));
   // 同步默认成本
-  defCost.packagingUnit=m.packaging.unitCost;
-  defCost.talismanUnit=m.talisman.unitCost;
-  localStorage.setItem(CK,JSON.stringify(defCost));
-  loadMaterials();updateTalismanCostLabels();
-  document.getElementById('defPackaging').value=m.packaging.unitCost.toFixed(2);
-  document.getElementById('defTalisman').value=m.talisman.unitCost.toFixed(2);
+  defCost.packagingUnit = m.packaging.unitCost;
+  defCost.talismanUnit = m.talisman.unitCost;
+  localStorage.setItem(CK, JSON.stringify(defCost));
+  loadMaterials();
+  updateTalismanCostLabels();
+  document.getElementById('defPackaging').value = m.packaging.unitCost.toFixed(2);
+  document.getElementById('defTalisman').value = m.talisman.unitCost.toFixed(2);
   alert('✅ 物料设置保存成功！');
 }
 // 实时计算单位成本
-matPackPurchase.addEventListener('input',()=>matPackUnitCost.textContent=calcUnitCost(parseFloat(matPackPurchase.value)||0,parseInt(matPackCount.value)||0,parseFloat(matPackFreight.value)||0).toFixed(2));
-matPackCount.addEventListener('input',()=>matPackUnitCost.textContent=calcUnitCost(parseFloat(matPackPurchase.value)||0,parseInt(matPackCount.value)||0,parseFloat(matPackFreight.value)||0).toFixed(2));
-matPackFreight.addEventListener('input',()=>matPackUnitCost.textContent=calcUnitCost(parseFloat(matPackPurchase.value)||0,parseInt(matPackCount.value)||0,parseFloat(matPackFreight.value)||0).toFixed(2));
-matTalismanPurchase.addEventListener('input',()=>matTalismanUnitCost.textContent=calcUnitCost(parseFloat(matTalismanPurchase.value)||0,parseInt(matTalismanCount.value)||0,parseFloat(matTalismanFreight.value)||0).toFixed(2));
-matTalismanCount.addEventListener('input',()=>matTalismanUnitCost.textContent=calcUnitCost(parseFloat(matTalismanPurchase.value)||0,parseInt(matTalismanCount.value)||0,parseFloat(matTalismanFreight.value)||0).toFixed(2));
-matTalismanFreight.addEventListener('input',()=>matTalismanUnitCost.textContent=calcUnitCost(parseFloat(matTalismanPurchase.value)||0,parseInt(matTalismanCount.value)||0,parseFloat(matTalismanFreight.value)||0).toFixed(2));
+document.getElementById('matPackPurchase').addEventListener('input', () => {
+  const price = parseFloat(document.getElementById('matPackPurchase').value) || 0;
+  const count = parseInt(document.getElementById('matPackCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matPackFreight').value) || 0;
+  document.getElementById('matPackUnitCost').textContent = calcUnitCost(price, count, freight).toFixed(2);
+});
+document.getElementById('matPackCount').addEventListener('input', () => {
+  const price = parseFloat(document.getElementById('matPackPurchase').value) || 0;
+  const count = parseInt(document.getElementById('matPackCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matPackFreight').value) || 0;
+  document.getElementById('matPackUnitCost').textContent = calcUnitCost(price, count, freight).toFixed(2);
+});
+document.getElementById('matPackFreight').addEventListener('input', () => {
+  const price = parseFloat(document.getElementById('matPackPurchase').value) || 0;
+  const count = parseInt(document.getElementById('matPackCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matPackFreight').value) || 0;
+  document.getElementById('matPackUnitCost').textContent = calcUnitCost(price, count, freight).toFixed(2);
+});
+document.getElementById('matTalismanPurchase').addEventListener('input', () => {
+  const price = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
+  const count = parseInt(document.getElementById('matTalismanCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matTalismanFreight').value) || 0;
+  document.getElementById('matTalismanUnitCost').textContent = calcUnitCost(price, count, freight).toFixed(2);
+});
+document.getElementById('matTalismanCount').addEventListener('input', () => {
+  const price = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
+  const count = parseInt(document.getElementById('matTalismanCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matTalismanFreight').value) || 0;
+  document.getElementById('matTalismanUnitCost').textContent = calcUnitCost(price, count, freight).toFixed(2);
+});
+document.getElementById('matTalismanFreight').addEventListener('input', () => {
+  const price = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
+  const count = parseInt(document.getElementById('matTalismanCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matTalismanFreight').value) || 0;
+  document.getElementById('matTalismanUnitCost').textContent = calcUnitCost(price, count, freight).toFixed(2);
+});
+
 /* ========= 商品行管理 ========= */
-function addProductRow(){
+function addProductRow() {
   itemIndex++;
-  const container=document.getElementById('productContainer');
-  const row=document.createElement('div');
-  row.id=`productRow${itemIndex}`;row.className='product-row';
-  row.innerHTML=`
+  const container = document.getElementById('productContainer');
+  const row = document.createElement('div');
+  row.id = `productRow${itemIndex}`;
+  row.className = 'product-row';
+  row.innerHTML = `
     <div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px 0">
       <span class="text-sm font-semibold text-gray-600">商品 ${itemIndex+1}</span>
       <button type="button" onclick="removeProductRow(${itemIndex})" style="background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer">− 删除</button>
@@ -317,7 +369,7 @@ function addProductRow(){
       <div><label class="text-xs mb-4 block">数量</label><input id="q${itemIndex}" class="input-base" type="number" value="1" min="1"></div>
     </div>
     <div class="mb-10"><label class="text-xs mb-4 block">商品1688货源链接</label><input id="src1688${itemIndex}" class="input-base" placeholder="https://detail.1688.com/..."></div>
-    <div class="mb-10"><label class="text-xs mb-4 block">商品采购成本(元/个，不填用默认)</label><input id="pur${itemIndex}" class="input-base" type="number" step="0.01" placeholder="不填用默认"></div>
+    <div class="mb-10"><label class="text-xs mb-4 block">商品采购成本(元/个，不填用默认)</label><input id="pur${itemIndex}" class="input-base" type="number" step="0.01" placeholder="不填则用默认"></div>
     <div class="product-talisman">
       <input type="checkbox" id="talisman${itemIndex}">
       <label for="talisman${itemIndex}" class="text-xs text-gray-600 cursor-pointer">含符纸（+¥<span id="talismanCost${itemIndex}">${defCost.talismanUnit.toFixed(2)}</span>/张）</label>
@@ -325,65 +377,290 @@ function addProductRow(){
   `;
   container.appendChild(row);
 }
-function removeProductRow(index){const row=document.getElementById(`productRow${index}`);if(row)row.remove()}
+function removeProductRow(index) { const row = document.getElementById(`productRow${index}`); if(row) row.remove(); }
+
 /* ========= 智能粘贴 ========= */
-function _parseAddr(s){if(!s)return{ph:'',addr:s};s=s.replace(/[\r\n]/g,' ').replace(/　/g,' ').replace(/地址[：:\s]*/i,'').trim();const m=s.match(/(1[3-9]\d{9})/);let ph='';if(m){ph=m[1];s=s.replace(ph,'')}s=s.replace(/^[，,：:、\s]+/,'').replace(/[，,：:、\s]+$/,'')).replace(/\s{2,}/g,' ').trim();return{ph,addr:s}}
-function smartPaste(){try{const r=_parseAddr(addr.value);if(r.ph)tel.value=r.ph;addr.value=r.addr}catch(e){}}
+function _parseAddr(s) {
+  if(!s) return { ph: '', addr: s };
+  s = s.replace(/[\r\n]/g, ' ').replace(/　/g, ' ').replace(/地址[：:\s]*/i, '').trim();
+  const m = s.match(/(1[3-9]\d{9})/);
+  let ph = '';
+  if(m) { ph = m[1]; s = s.replace(ph, ''); }
+  s = s.replace(/^[，,：:、\s]+/, '').replace(/[，,：:、\s]+$/, '').replace(/\s{2,}/g, ' ').trim();
+  return { ph, addr: s };
+}
+function smartPaste() { try { const r = _parseAddr(addr.value); if(r.ph) tel.value = r.ph; addr.value = r.addr; } catch(e) {} }
+
 /* ========= 定金计算 ========= */
-function toggleDeposit(){const box=document.getElementById('depositBox');box.style.display=paid.value==='待收款（定金）'?'block':'none';if(paid.value==='待收款（定金）')calcUnpaid()}
-function calcUnpaid(){try{let total=0;for(let i=0;i<=itemIndex;i++){const pr=parseFloat(document.getElementById(`pr${i}`).value)||0,q=parseInt(document.getElementById(`q${i}`).value)||0;total+=pr*q}const deposit=parseFloat(deposit.value)||0,unpaid=total-deposit;depositResult.textContent=`未付尾款：${formatMoney(unpaid)}`}catch(e){}}
+function toggleDeposit() {
+  const box = document.getElementById('depositBox');
+  box.style.display = paid.value === '待收款（定金）' ? 'block' : 'none';
+  if(paid.value === '待收款（定金）') calcUnpaid();
+}
+function calcUnpaid() {
+  try {
+    let total = 0;
+    for(let i=0; i<=itemIndex; i++) {
+      const pr = parseFloat(document.getElementById(`pr${i}`).value) || 0;
+      const q = parseInt(document.getElementById(`q${i}`).value) || 0;
+      total += pr * q;
+    }
+    const deposit = parseFloat(deposit.value) || 0;
+    const unpaid = total - deposit;
+    document.getElementById('depositResult').textContent = `未付尾款：${formatMoney(unpaid)}`;
+  } catch(e) {}
+}
+
 /* ========= 订单提交 ========= */
-function go(){try{
-  // 校验
-  const cV=c.value.trim();if(!cV){alert('客户微信名必填');c.focus();return}
-  let totalQty=0,totalTalisman=0,items=[],hasError=false;
-  for(let i=0;i<=itemIndex;i++){
-    const pEl=document.getElementById(`p${i}`),prEl=document.getElementById(`pr${i}`),qEl=document.getElementById(`q${i}`),srcEl=document.getElementById(`src1688${i}`),purEl=document.getElementById(`pur${i}`),talEl=document.getElementById(`talisman${i}`);
-    if(!pEl||!prEl||!qEl)continue;
-    const pV=pEl.value.trim(),prV=parseFloat(prEl.value),qV=parseInt(qEl.value)||1;
-    if(!pV){alert(`商品${i+1}名称必填`);pEl.focus();hasError=true;break}
-    if(!prV||prV<=0){alert(`商品${i+1}单价必填且大于0`);prEl.focus();hasError=true;break}
-    totalQty+=qV;
-    if(talEl&&talEl.checked)totalTalisman+=qV;
-    items.push({productName:pV,price:prV,quantity:qV,productTotal:prV*qV,src1688:srcEl?srcEl.value.trim():'',purchaseCost:purEl&&purEl.value.trim()?parseFloat(purEl.value.trim()):defCost.pur,talismanSelected:talEl?talEl.checked:false});
-  }
-  if(hasError)return;if(totalQty===0){alert('至少添加一个商品且数量大于0');return}
-  // 库存校验
-  const m=getMaterials();
-  if(m.packaging.count<totalQty){alert(`❌ 包装盒库存不足！当前剩余${m.packaging.count}个，需要${totalQty}个`);return}
-  if(m.talisman.count<totalTalisman){alert(`❌ 符纸库存不足！当前剩余${m.talisman.count}张，需要${totalTalisman}张`);return}
-  // 定金校验
-  const paidVal=paid.value,totalSales=items.reduce((s,i)=>s+i.productTotal,0);
-  let depositVal=0,unpaidVal=0;
-  if(paidVal==='待收款（定金）'){depositVal=parseFloat(deposit.value)||0;unpaidVal=totalSales-depositVal;if(depositVal>=totalSales){alert('定金不能大于等于商品总金额！');deposit.focus();return}}
-  // 成本利润计算
-  const packagingUnitCost=m.packaging.unitCost||defCost.packagingUnit,talismanUnitCost=m.talisman.unitCost||defCost.talismanUnit,expressCost=parseFloat(exp.value)||defCost.exp,expressShare=totalQty>0?expressCost/totalQty:0;
-  let orderTotalCost=0,orderTotalProfit=0;
-  items.forEach(i=>{i.packagingCost=packagingUnitCost;i.talismanCost=i.talismanSelected?talismanUnitCost*i.quantity:0;i.expressShare=expressShare;i.itemTotalCost=(i.purchaseCost+i.packagingCost+i.talismanCost+i.expressShare)*i.quantity;i.itemProfit=i.productTotal-i.itemTotalCost;orderTotalCost+=i.itemTotalCost;orderTotalProfit+=i.itemProfit});
-  // 扣减库存
-  m.packaging.count-=totalQty;m.talisman.count-=totalTalisman;localStorage.setItem(MK,JSON.stringify(m));
-  // 保存订单
-  const order={orderNumber:`WX${Date.now()}${Math.floor(Math.random()*1000)}`,customerName:cV,tel:(tel.value||'').trim(),address:(addr.value||'').trim(),status:paidVal,deposit:depositVal,unpaid:unpaidVal,totalAmount:totalSales,totalCost:orderTotalCost,totalProfit:orderTotalProfit,grossProfitRate:totalSales>0?(orderTotalProfit/totalSales*100):0,createTime:new Date().toLocaleString('zh-CN'),items,memo:(memo.value||'').trim()};
-  const orders=getOrders();orders.push(order);localStorage.setItem(K,JSON.stringify(orders));
-  // 重置表单
-  resetForm();loadMaterials();
-  if(navigator.vibrate)navigator.vibrate(50);
-  let msg=`✅ 订单提交成功！\n总销售额：${formatMoney(totalSales)}\n总利润：${formatMoney(orderTotalProfit)}`;
-  if(paidVal==='待收款（定金）')msg+=`\n已付定金：${formatMoney(depositVal)}\n未付尾款：${formatMoney(unpaidVal)}`;
-  alert(msg);
-}catch(e){alert('提交失败：'+e.message)}}
-function resetForm(){for(let i=itemIndex;i>0;i--)removeProductRow(i);p0.value='';pr0.value='';q0.value='1';src16880.value='';pur0.value='';talisman0.checked=false;c.value='';addr.value='';tel.value='';exp.value='';paid.value='已收款';deposit.value='';memo.value='';toggleDeposit();itemIndex=0}
+function go() {
+  try {
+    const cV = c.value.trim();
+    if(!cV) { alert('客户微信名必填'); c.focus(); return; }
+    let totalQty = 0, totalTalisman = 0, items = [], hasError = false;
+    for(let i=0; i<=itemIndex; i++) {
+      const pEl = document.getElementById(`p${i}`), prEl = document.getElementById(`pr${i}`), qEl = document.getElementById(`q${i}`), srcEl = document.getElementById(`src1688${i}`), purEl = document.getElementById(`pur${i}`), talEl = document.getElementById(`talisman${i}`);
+      if(!pEl || !prEl || !qEl) continue;
+      const pV = pEl.value.trim(), prV = parseFloat(prEl.value), qV = parseInt(qEl.value) || 1;
+      if(!pV) { alert(`商品${i+1}名称必填`); pEl.focus(); hasError=true; break; }
+      if(!prV || prV <=0) { alert(`商品${i+1}单价必填且大于0`); prEl.focus(); hasError=true; break; }
+      totalQty += qV;
+      if(talEl && talEl.checked) totalTalisman += qV;
+      items.push({
+        productName: pV,
+        price: prV,
+        quantity: qV,
+        productTotal: prV * qV,
+        src1688: srcEl ? srcEl.value.trim() : '',
+        purchaseCost: purEl && purEl.value.trim() ? parseFloat(purEl.value.trim()) : defCost.pur,
+        talismanSelected: talEl ? talEl.checked : false
+      });
+    }
+    if(hasError) return;
+    if(totalQty === 0) { alert('至少添加一个商品且数量大于0'); return; }
+    // 库存校验
+    const m = getMaterials();
+    if(m.packaging.count < totalQty) { alert(`❌ 包装盒库存不足！当前剩余${m.packaging.count}个，需要${totalQty}个`); return; }
+    if(m.talisman.count < totalTalisman) { alert(`❌ 符纸库存不足！当前剩余${m.talisman.count}张，需要${totalTalisman}张`); return; }
+    // 定金校验
+    const paidVal = paid.value, totalSales = items.reduce((s, i) => s + i.productTotal, 0);
+    let depositVal = 0, unpaidVal = 0;
+    if(paidVal === '待收款（定金）') {
+      depositVal = parseFloat(deposit.value) || 0;
+      unpaidVal = totalSales - depositVal;
+      if(depositVal >= totalSales) { alert('定金不能大于等于商品总金额！'); deposit.focus(); return; }
+    }
+    // 成本利润计算
+    const packagingUnitCost = m.packaging.unitCost || defCost.packagingUnit;
+    const talismanUnitCost = m.talisman.unitCost || defCost.talismanUnit;
+    const expressCost = parseFloat(exp.value) || defCost.exp;
+    const expressShare = totalQty > 0 ? expressCost / totalQty : 0;
+    let orderTotalCost = 0, orderTotalProfit = 0;
+    items.forEach(i => {
+      i.packagingCost = packagingUnitCost * i.quantity;
+      i.talismanCost = i.talismanSelected ? talismanUnitCost * i.quantity : 0;
+      i.expressShare = expressShare * i.quantity;
+      i.itemTotalCost = i.purchaseCost * i.quantity + i.packagingCost + i.talismanCost + i.expressShare;
+      i.itemProfit = i.productTotal - i.itemTotalCost;
+      orderTotalCost += i.itemTotalCost;
+      orderTotalProfit += i.itemProfit;
+    });
+    // 扣减库存
+    m.packaging.count -= totalQty;
+    m.talisman.count -= totalTalisman;
+    localStorage.setItem(MK, JSON.stringify(m));
+    // 保存订单
+    const order = {
+      orderNumber: `WX${Date.now()}${Math.floor(Math.random()*1000)}`,
+      customerName: cV,
+      tel: (tel.value || '').trim(),
+      address: (addr.value || '').trim(),
+      status: paidVal,
+      deposit: depositVal,
+      unpaid: unpaidVal,
+      totalAmount: totalSales,
+      totalCost: orderTotalCost,
+      totalProfit: orderTotalProfit,
+      grossProfitRate: totalSales > 0 ? (orderTotalProfit / totalSales * 100) : 0,
+      createTime: new Date().toLocaleString('zh-CN'),
+      items: items,
+      memo: (memo.value || '').trim()
+    };
+    const orders = getOrders();
+    orders.push(order);
+    localStorage.setItem(K, JSON.stringify(orders));
+    // 重置表单
+    resetForm();
+    loadMaterials();
+    if(navigator.vibrate) navigator.vibrate(50);
+    let msg = `✅ 订单提交成功！\n总销售额：${formatMoney(totalSales)}\n总利润：${formatMoney(orderTotalProfit)}`;
+    if(paidVal === '待收款（定金）') msg += `\n已付定金：${formatMoney(depositVal)}\n未付尾款：${formatMoney(unpaidVal)}`;
+    alert(msg);
+  } catch(e) { alert('提交失败：'+e.message); }
+}
+function resetForm() {
+  for(let i=itemIndex; i>0; i--) removeProductRow(i);
+  document.getElementById('p0').value = '';
+  document.getElementById('pr0').value = '';
+  document.getElementById('q0').value = '1';
+  document.getElementById('src16880').value = '';
+  document.getElementById('pur0').value = '';
+  document.getElementById('talisman0').checked = false;
+  c.value = '';
+  addr.value = '';
+  tel.value = '';
+  exp.value = '';
+  paid.value = '已收款';
+  deposit.value = '';
+  memo.value = '';
+  toggleDeposit();
+  itemIndex = 0;
+}
+
 /* ========= 数据统计 ========= */
-function cnt(){try{const d=new Date(),ts=`${d.getFullYear()}/${(d.getMonth()+1)}/${d.getDate()}`,orders=getOrders();let n=0,a=0,w=0,p=0,prf=0,u=0;orders.forEach(o=>{if(o.createTime&&o.createTime.startsWith(ts)){n++;const amt=parseFloat(o.totalAmount)||0;a+=amt;if(o.status==='待收款')w+=amt;if(o.status==='已收款')p+=amt;if(o.status==='待收款（定金）')u+=parseFloat(o.unpaid)||0;prf+=parseFloat(o.totalProfit)||0}});$.tc.textContent=n;$.ta.textContent=formatMoney(a);$.tw.textContent=formatMoney(w);$.tp.textContent=formatMoney(p);$.tpr.textContent=formatMoney(prf);$.tg.textContent=a>0?`${(prf/a*100).toFixed(2)}%`:'0.00%';$.tu.textContent=formatMoney(u)}catch(e){}}
-function renderUnpaidList(){try{const orders=getOrders(),list=orders.filter(o=>o.status==='待收款（定金）').sort((a,b)=>new Date(b.createTime)-new Date(a.createTime));const el=document.getElementById('unpaidList');if(!list.length){el.innerHTML='<div class="no-data">暂无待收尾款订单</div>';return}let html='';list.forEach(o=>{const unpaid=parseFloat(o.unpaid)||0;html+=`<div class="py-10 border-t"><div class="text-sm font-medium">${o.customerName||'-'}</div><div class="text-xs text-gray-500 mt-1">下单：${o.createTime||'-'}</div></div><div class="text-sm font-semibold text-orange-700">${formatMoney(unpaid)}</div></div>`});el.innerHTML=html}catch(e){}}
-function renderMaterialOverview(){try{const m=getMaterials(),el=document.getElementById('materialOverviewContent');if(m.packaging.count===0&&m.talisman.count===0){el.innerHTML='<div class="no-data">暂无物料信息，请前往「物料管理」配置</div>';return}let html='';if(m.packaging.count>0){html+=`<div class="material-item"><div class="text-sm font-medium mb-4">📦 包装盒</div><div class="text-xs text-gray-600"><span>库存：${m.packaging.count}个</span><span class="ml-12">单位成本：${formatMoney(m.packaging.unitCost)}/个</span><span class="ml-12">总进价：${formatMoney(m.packaging.purchasePrice+m.packaging.freight)}</span></div>${m.packaging.link?`<a href="${m.packaging.link}" target="_blank" class="src mt-4 inline-block">1688采购链接 ↗</a>`:''}</div>`}if(m.talisman.count>0){html+=`<div class="material-item"><div class="text-sm font-medium mb-4">📜 符纸</div><div class="text-xs text-gray-600"><span>库存：${m.talisman.count}张</span><span class="ml-12">单位成本：${formatMoney(m.talisman.unitCost)}/张</span><span class="ml-12">总进价：${formatMoney(m.talisman.purchasePrice+m.talisman.freight)}</span></div>${m.talisman.link?`<a href="${m.talisman.link}" target="_blank" class="src mt-4 inline-block">1688采购链接 ↗</a>`:''}</div>`}el.innerHTML=html}catch(e){el.innerHTML='<div class="no-data">加载物料信息失败</div>'}
-function pvw(){try{const orders=getOrders(),el=document.getElementById('pv');if(!orders.length){el.innerHTML='<div class="no-data">暂无订单</div>';return}let html='<table style="width:100%;border-collapse:collapse;font-size:12px"><tr><th style="background:#f9fafb;padding:7px 6px;text-align:left">单号</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">客户</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">状态</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">纯利</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">货源</th></tr>';orders.slice(-6).reverse().forEach(o=>{const pf=parseFloat(o.totalProfit)||0,pc=pf>0?'p-pos':pf<0?'p-neg':'p-zero',sc=o.status==='已收款'?'status-paid':o.status==='待收款'?'status-wait':'status-deposit',fi=o.items&&o.items[0]?o.items[0]:{},link=fi.src1688?`<a href="${fi.src1688}" target="_blank" class="src">1688 ↗</a>`:'<span style="color:#ccc">-</span>';html+=`<tr><td style="padding:7px 6px;border-top:1px solid #f0f0f0">${o.orderNumber.slice(-6)}</td><td style="padding:7px 6px;border-top:1px solid #f0f0f0">${o.customerName||'-'}</td><td style="padding:7px 6px;border-top:1px solid #f0f0f0"><span class="status-tag ${sc}">${o.status||'已收款'}</span></td><td style="padding:7px 6px;border-top:1px solid #f0f0f0" class="${pc}">${formatMoney(pf)}</td><td style="padding:7px 6px;border-top:1px solid #f0f0f0">${link}</td></tr>`});html+='</table>';el.innerHTML=html}catch(e){el.innerHTML='<div class="no-data">暂无订单</div>'}}
+function cnt() {
+  try {
+    const d = new Date(), ts = `${d.getFullYear()}/${(d.getMonth()+1)}/${d.getDate()}`;
+    const orders = getOrders();
+    let n=0, a=0, w=0, p=0, prf=0, u=0;
+    orders.forEach(o => {
+      if(o.createTime && o.createTime.startsWith(ts)) {
+        n++;
+        const amt = parseFloat(o.totalAmount) || 0;
+        a += amt;
+        if(o.status === '待收款') w += amt;
+        if(o.status === '已收款') p += amt;
+        if(o.status === '待收款（定金）') u += parseFloat(o.unpaid) || 0;
+        prf += parseFloat(o.totalProfit) || 0;
+      }
+    });
+    $.tc.textContent = n;
+    $.ta.textContent = formatMoney(a);
+    $.tw.textContent = formatMoney(w);
+    $.tp.textContent = formatMoney(p);
+    $.tpr.textContent = formatMoney(prf);
+    $.tg.textContent = a > 0 ? `${(prf/a*100).toFixed(2)}%` : '0.00%';
+    $.tu.textContent = formatMoney(u);
+  } catch(e) {}
+}
+
+/* ========= Tab2 物料概览 ========= */
+function renderMaterialOverview() {
+  try {
+    const m = getMaterials(), el = document.getElementById('materialOverviewContent');
+    if(m.packaging.count === 0 && m.talisman.count === 0) {
+      el.innerHTML = '<div class="no-data">暂无物料信息，请前往「物料管理」配置</div>';
+      return;
+    }
+    let html = '';
+    if(m.packaging.count > 0) {
+      html += `<div class="material-item"><div class="text-sm font-medium mb-4">📦 包装盒</div><div class="text-xs text-gray-600"><span>库存：${m.packaging.count}个</span><span class="ml-12">单位成本：${formatMoney(m.packaging.unitCost)}/个</span><span class="ml-12">总进价：${formatMoney(m.packaging.purchasePrice + m.packaging.freight)}</span></div>${m.packaging.link ? `<a href="${m.packaging.link}" target="_blank" class="src mt-4 inline-block">1688采购链接 ↗</a>` : ''}</div>`;
+    }
+    if(m.talisman.count > 0) {
+      html += `<div class="material-item"><div class="text-sm font-medium mb-4">📜 符纸</div><div class="text-xs text-gray-600"><span>库存：${m.talisman.count}张</span><span class="ml-12">单位成本：${formatMoney(m.talisman.unitCost)}/张</span><span class="ml-12">总进价：${formatMoney(m.talisman.purchasePrice + m.talisman.freight)}</span></div>${m.talisman.link ? `<a href="${m.talisman.link}" target="_blank" class="src mt-4 inline-block">1688采购链接 ↗</a>` : ''}</div>`;
+    }
+    el.innerHTML = html;
+  } catch(e) { document.getElementById('materialOverviewContent').innerHTML = '<div class="no-data">加载物料信息失败</div>'; }
+}
+
+/* ========= 待收尾款列表 ========= */
+function renderUnpaidList() {
+  try {
+    const orders = getOrders(), list = orders.filter(o => o.status === '待收款（定金）').sort((a,b) => new Date(b.createTime) - new Date(a.createTime));
+    const el = document.getElementById('unpaidList');
+    if(!list.length) { el.innerHTML = '<div class="no-data">暂无待收尾款订单</div>'; return; }
+    let html = '';
+    list.forEach(o => {
+      const unpaid = parseFloat(o.unpaid) || 0;
+      html += `<div class="py-10 border-t"><div class="text-sm font-medium">${o.customerName||'-'}</div><div class="text-xs text-gray-500 mt-1">下单：${o.createTime||'-'}</div><div class="text-sm font-semibold text-orange-700">${formatMoney(unpaid)}</div></div>`;
+    });
+    el.innerHTML = html;
+  } catch(e) {}
+}
+
+/* ========= 最近订单预览 ========= */
+function pvw() {
+  try {
+    const orders = getOrders(), el = document.getElementById('pv');
+    if(!orders.length) { el.innerHTML = '<div class="no-data">暂无订单</div>'; return; }
+    let html = '<table style="width:100%;border-collapse:collapse;font-size:12px"><tr><th style="background:#f9fafb;padding:7px 6px;text-align:left">单号</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">客户</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">状态</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">纯利</th><th style="background:#f9fafb;padding:7px 6px;text-align:left">货源</th></tr>';
+    orders.slice(-6).reverse().forEach(o => {
+      const pf = parseFloat(o.totalProfit) || 0, pc = pf>0?'p-pos':pf<0?'p-neg':'p-zero';
+      const sc = o.status === '已收款' ? 'status-paid' : o.status === '待收款' ? 'status-wait' : 'status-deposit';
+      const fi = o.items && o.items[0] ? o.items[0] : {}, link = fi.src1688 ? `<a href="${fi.src1688}" target="_blank" class="src">1688 ↗</a>` : '<span style="color:#ccc">-</span>';
+      html += `<tr><td style="padding:7px 6px;border-top:1px solid #f0f0f0">${o.orderNumber?.slice(-6)}</td><td style="padding:7px 6px;border-top:1px solid #f0f0f0">${o.customerName||'-'}</td><td style="padding:7px 6px;border-top:1px solid #f0f0f0"><span class="status-tag ${sc}">${o.status||'已收款'}</span></td><td style="padding:7px 6px;border-top:1px solid #f0f0f0" class="${pc}">${formatMoney(pf)}</td><td style="padding:7px 6px;border-top:1px solid #f0f0f0">${link}</td></tr>`;
+    });
+    html += '</table>';
+    el.innerHTML = html;
+  } catch(e) { document.getElementById('pv').innerHTML = '<div class="no-data">暂无订单</div>'; }
+}
+
 /* ========= 导出功能 ========= */
-function dlCSV(){try{const orders=getOrders();if(!orders.length){alert('暂无订单');return}const m=getMaterials();let csv='\uFEFF【物料采购信息汇总】\n物料类型,当前库存,单位成本(元),总进价(元),采购运费(元),采购链接\n';csv+=`包装盒,${m.packaging.count}个,${formatMoney(m.packaging.unitCost)}/个,${formatMoney(m.packaging.purchasePrice+m.packaging.freight)},${formatMoney(m.packaging.freight)},"${m.packaging.link||'无'}"\n`;csv+=`符纸,${m.talisman.count}张,${formatMoney(m.talisman.unitCost)}/张,${formatMoney(m.talisman.purchasePrice+m.talisman.freight)},${formatMoney(m.talisman.freight)},"${m.talisman.link||'无'}"\n\n【订单明细】\n订单号,客户微信,联系电话,收货地址,商品名称,商品单价(元),商品数量,商品总金额(元),商品1688链接,商品采购成本(元/个),包装盒成本(元/个),符纸成本(元/张),分摊快递成本(元/个),商品总成本(元),是否含符纸,已付定金(元),未付尾款(元),纯利润(元),毛利(%),订单备注,收款状态,下单时间\n`;orders.forEach(o=>{if(!o.items||o.items.length===0){const amt=parseFloat(o.totalAmount)||0,pf=parseFloat(o.profit)||0,gr=amt>0?(pf/amt*100).toFixed(2)+'%':'0.00%',prefix=o.status==='待收款（定金）'?'【定金】':'';csv+=`${o.orderNumber||''},"${o.customerName||''}","${o.tel||''}","${o.address||''}","${o.productName||''}",${o.price||0},${o.quantity||1},${amt},"${o.src1688||''}",${o.purchase||0},0,0,${(parseFloat(o.express)||0)/(o.quantity||1)||0},${parseFloat(o.totalCost)||0},"旧数据",${parseFloat(o.deposit)||0},${parseFloat(o.unpaid)||0},${pf.toFixed(2)},"${gr}","${prefix+(o.status||'已收款')}","${o.createTime||''}"\n`}else{o.items.forEach((it,idx)=>{const itTotal=parseFloat(it.productTotal)||0,itCost=parseFloat(it.itemTotalCost)||0,itProfit=parseFloat(it.itemProfit)||0,gr=itTotal>0?(itProfit/itTotal*100).toFixed(2)+'%':'0.00%',prefix=o.status==='待收款（定金）'&&idx===0?'【定金】':'';csv+=`${idx===0?o.orderNumber:''},"${idx===0?o.customerName:''}","${idx===0?o.tel:''}","${idx===0?o.address:''}","${it.productName}",${it.price},${it.quantity},${itTotal},"${it.src1688||''}",${it.purchaseCost},${it.packagingCost||0},${it.talismanCost?(it.talismanCost/it.quantity).toFixed(2):0},${it.expressShare||0},${itCost},"${it.talismanSelected?'是':'否'}",${idx===0?parseFloat(o.deposit)||0:0},${idx===0?parseFloat(o.unpaid)||0:0},${itProfit.toFixed(2)},"${gr}","${idx===0?o.memo||'':''}","${prefix+o.status}","${idx===0?o.createTime||'':''}"\n`})}});const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`微信订单_${new Date().toISOString().slice(0,10)}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),100)}catch(e){alert('导出CSV失败：'+e.message)}}
-function dlJSON(){try{const orders=getOrders();if(!orders.length){alert('暂无订单');return}const blob=new Blob([JSON.stringify(orders,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`订单备份_${Date.now()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),100)}catch(e){alert('备份失败：'+e.message)}}
-function clr(){if(!confirm('清空订单？（默认成本和物料库存不会被清）'))return;localStorage.removeItem(K);cnt();renderUnpaidList();pvw();alert('✅ 订单已清空')}
+function dlCSV() {
+  try {
+    const orders = getOrders();
+    if(!orders.length) { alert('暂无订单'); return; }
+    const m = getMaterials();
+    let csv = '\uFEFF【物料采购信息汇总】\n物料类型,当前库存,单位成本(元),总进价(元),采购运费(元),采购链接\n';
+    if(m.packaging.count > 0) csv += `包装盒,${m.packaging.count}个,${formatMoney(m.packaging.unitCost)}/个,${formatMoney(m.packaging.purchasePrice + m.packaging.freight)},${formatMoney(m.packaging.freight)},"${m.packaging.link||'无'}"\n`;
+    if(m.talisman.count > 0) csv += `符纸,${m.talisman.count}张,${formatMoney(m.talisman.unitCost)}/张,${formatMoney(m.talisman.purchasePrice + m.talisman.freight)},${formatMoney(m.talisman.freight)},"${m.talisman.link||'无'}"\n\n【订单明细】\n`;
+    csv += '订单号,客户微信,联系电话,收货地址,商品名称,商品单价(元),商品数量,商品总金额(元),商品1688链接,商品采购成本(元/个),包装盒成本(元/个),符纸成本(元/张),分摊快递成本(元/个),商品总成本(元),是否含符纸,已付定金(元),未付尾款(元),纯利润(元),毛利(%),订单备注,收款状态,下单时间\n';
+    orders.forEach(order => {
+      if(!order.items || order.items.length === 0) {
+        const amt = parseFloat(order.totalAmount) || 0, pf = parseFloat(order.profit) || 0, gr = amt>0?`${(pf/amt*100).toFixed(2)}%`:'0.00%', prefix = order.status==='待收款（定金）'?'【定金】':'';
+        csv += `"${order.orderNumber}","${order.customerName}","${order.tel}","${order.address}","${order.productName}",${order.price},${order.quantity},${amt},"${order.src1688||''}",${order.purchase||0},0,0,${(parseFloat(order.express)||0)/(order.quantity||1)||0},${parseFloat(order.totalCost)||0},"旧数据",${parseFloat(order.deposit)||0},${parseFloat(order.unpaid)||0},${pf.toFixed(2)},"${gr}","${prefix+(order.status||'已收款')}","${order.createTime||''}"\n`;
+      } else {
+        order.items.forEach((it, idx) => {
+          const itTotal = parseFloat(it.productTotal) || 0, itCost = parseFloat(it.itemTotalCost) || 0, itProfit = parseFloat(it.itemProfit) || 0;
+          const gr = itTotal>0?`${(itProfit/itTotal*100).toFixed(2)}%`:'0.00%', prefix = order.status==='待收款（定金）'&&idx===0?'【定金】':'';
+          const talismanFlag = it.talismanSelected ? '是' : '否';
+          csv += `"${idx===0?order.orderNumber:''}","${idx===0?order.customerName:''}","${idx===0?order.tel:''}","${idx===0?order.address:''}","${it.productName}",${it.price},${it.quantity},${itTotal},"${it.src1688||''}",${it.purchaseCost},${(it.packagingCost/it.quantity)||0},${(it.talismanCost/it.quantity)||0},${(it.expressShare/it.quantity)||0},${itCost},"${talismanFlag}",${idx===0?parseFloat(order.deposit)||0:0},${idx===0?parseFloat(order.unpaid)||0:0},${itProfit.toFixed(2)},"${gr}","${idx===0?order.memo:''}","${prefix+order.status}","${idx===0?order.createTime:''}"\n`;
+        });
+      }
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url;
+    a.download = `微信订单_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+  } catch(e) { alert('导出CSV失败：'+e.message); }
+}
+function dlJSON() {
+  try {
+    const orders = getOrders();
+    if(!orders.length) { alert('暂无订单'); return; }
+    const blob = new Blob([JSON.stringify(orders, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url;
+    a.download = `订单备份_${Date.now()}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+  } catch(e) { alert('备份失败：'+e.message); }
+}
+function clr() {
+  if(!confirm('清空订单？（默认成本和物料库存不会被清）')) return;
+  localStorage.removeItem(K);
+  cnt();
+  renderUnpaidList();
+  pvw();
+  alert('✅ 订单已清空');
+}
+
 /* ========= 初始化 ========= */
-window.onload=function(){$.tc=document.getElementById('tc');$.ta=document.getElementById('ta');$.tw=document.getElementById('tw');$.tp=document.getElementById('tp');$.tpr=document.getElementById('tpr');$.tg=document.getElementById('tg');$.tu=document.getElementById('tu');loadDef();cnt();renderUnpaidList();pvw();toggleDeposit()};
+window.onload = function() {
+  $.tc = document.getElementById('tc');
+  $.ta = document.getElementById('ta');
+  $.tw = document.getElementById('tw');
+  $.tp = document.getElementById('tp');
+  $.tpr = document.getElementById('tpr');
+  $.tg = document.getElementById('tg');
+  $.tu = document.getElementById('tu');
+  loadDef();
+  cnt();
+  renderUnpaidList();
+  pvw();
+  toggleDeposit();
+};
 </script>
 </body>
 </html>
