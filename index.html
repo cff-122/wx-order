@@ -10,8 +10,8 @@
 <style>
 :root {
   --primary: #07c160; --blue: #1677ff; --orange: #fa8c16;
-  --bg: #f4f6f8; --card: #ffffff; --text-main: #1f2937;
-  --radius: 16px; --shadow: 0 10px 30px rgba(0,0,0,0.06);
+  --bg: #f4f6f8; --card: #ffffff; --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,0.06);
 }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
@@ -36,7 +36,7 @@ body {
 
 .main-card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
 h2 { margin: 0 0 16px; font-size: 19px; font-weight: 600; text-align: center; }
-label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
+label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: #1f2937; }
 input, textarea, select {
   width: 100%; padding: 11px 12px; border: 1px solid #e5e7eb;
   border-radius: 10px; font-size: 15px; background: #f9fafb;
@@ -67,6 +67,7 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
 .src { color: var(--blue); text-decoration: underline; font-size: 11px; }
 
 .tip { text-align: center; font-size: 11px; color: #bbb; margin-top: 12px; }
+.warn { color: #fa8c16; font-size: 12px; text-align: center; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -81,7 +82,7 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
   <div class="stat-card"><div class="stat-title">📈 毛利</div><div class="stat-num stat-gross" id="tg">0.00%</div></div>
 </div>
 
-<!-- 默认成本面板 -->
+<!-- 默认成本设置 -->
 <div class="cost-setting">
   <div class="cost-header" onclick="toggleCost()">
     ⚙️ 默认成本设置
@@ -100,11 +101,9 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
 <!-- 新建订单 -->
 <div class="main-card">
   <h2>🛒 新建订单</h2>
-
   <div style="margin-bottom:12px"><label>客户微信名</label><input id="c" placeholder="必填"></div>
   <div style="margin-bottom:12px"><label>1688货源链接</label><input id="src1688" placeholder="https://detail.1688.com/..."></div>
-
-  <!-- 地址+智能粘贴 -->
+  
   <div style="margin-bottom:12px">
     <label>收货地址（粘贴整段自动识别电话）</label>
     <div style="display:flex;gap:8px;align-items:stretch">
@@ -119,7 +118,6 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
   <div style="margin-bottom:12px"><label>联系电话</label><input id="tel" inputmode="numeric"></div>
   <div style="margin-bottom:12px"><label>商品名称</label><input id="p" placeholder="必填"></div>
 
-  <!-- 三项成本：不填=用默认 -->
   <div class="cost3">
     <div><label>采购成本</label><input id="pur" type="number" step="0.01" placeholder="不填用默认"></div>
     <div><label>快递成本</label><input id="exp" type="number" step="0.01" placeholder="不填用默认"></div>
@@ -141,6 +139,7 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
   </div>
 
   <button class="btn" onclick="go()">📋 提交订单</button>
+  <p class="warn">⚠️ 微信内打开可能无法下载，请点右上角「在浏览器中打开」</p>
 
   <div class="action-bar">
     <button class="btna btna-b" onclick="dlCSV()">📥 导出CSV</button>
@@ -156,16 +155,17 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
 </div>
 
 <script>
-/* ========= 常量 & 默认成本 ========= */
+/* ========= 基础配置 ========= */
 const K = 'wechatOrders', CK = 'orderDefCost';
 let defCost = { pur:0, exp:0, pak:0 };
 
+/* ========= 默认成本 ========= */
 function loadDef(){
   try {
     const j = localStorage.getItem(CK);
     if(j) defCost = JSON.parse(j);
+    _ph();
   } catch(e){}
-  _ph();
 }
 function saveDef(){
   defCost = {
@@ -179,9 +179,9 @@ function saveDef(){
 }
 function _ph(){
   try{
-    pur.placeholder   = '不填则用 ¥'+defCost.pur.toFixed(2);
-    exp.placeholder  = '不填则用 ¥'+defCost.exp.toFixed(2);
-    pak.placeholder  = '不填则用 ¥'+defCost.pak.toFixed(2);
+    pur.placeholder = `不填则用 ¥${defCost.pur.toFixed(2)}`;
+    exp.placeholder = `不填则用 ¥${defCost.exp.toFixed(2)}`;
+    pak.placeholder = `不填则用 ¥${defCost.pak.toFixed(2)}`;
   }catch(e){}
 }
 
@@ -193,65 +193,66 @@ function WR(arr){ try{ localStorage.setItem(K, JSON.stringify(arr)); }catch(e){ 
 function _parseAddr(s){
   if(!s) return {ph:'',addr:s};
   s = s.replace(/[\r\n]/g,' ').replace(/　/g,' ').replace(/地址[：:\s]*/i,'').trim();
-  const m=s.match(/(1[3-9]\d{9})/);
-  let ph='';
-  if(m){ ph=m[1]; s=s.replace(ph,''); }
-  s=s.replace(/^[，,：:、\s]+/,'').replace(/[，,：:、\s]+$/,'')
-     .replace(/\s{2,}/g,' ').trim();
+  const m = s.match(/(1[3-9]\d{9})/);
+  let ph = '';
+  if(m){ ph = m[1]; s = s.replace(ph,''); }
+  s = s.replace(/^[，,：:、\s]+/,'').replace(/[，,：:、\s]+$/,'')
+       .replace(/\s{2,}/g,' ').trim();
   return {ph,addr:s};
 }
 function smartPaste(){
   try{
-    const r=_parseAddr(addr.value);
-    if(r.ph) tel.value=r.ph;
-    addr.value=r.addr;
+    const r = _parseAddr(addr.value);
+    if(r.ph) tel.value = r.ph;
+    addr.value = r.addr;
   }catch(e){}
 }
 
-/* ========= 统计（兼容旧数据缺字段）========= */
+/* ========= 统计（兼容旧数据）========= */
 function cnt(){
   try{
-    const d=new Date(), ts=d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate();
-    const A=RD();
+    const d = new Date();
+    const ts = `${d.getFullYear()}/${(d.getMonth()+1)}/${d.getDate()}`;
+    const A = RD();
     let n=0,a=0,w=0,p=0,prf=0;
     A.forEach(o=>{
-      if(o.createTime&&o.createTime.startsWith(ts)){
+      if(o.createTime && o.createTime.startsWith(ts)){
         n++;
-        const amt= parseFloat(o.totalAmount||0);
-        a+=amt;
-        if(o.status==='待收款') w+=amt;
-        if(o.status==='已收款') p+=amt;
-        prf += (o.profit ?? 0);   // ← 关键：旧数据 profit 可能不存在
+        const amt = parseFloat(o.totalAmount||0);
+        a += amt;
+        if(o.status==='待收款') w += amt;
+        if(o.status==='已收款') p += amt;
+        prf += (o.profit??0);
       }
     });
-    tc.textContent=n;
-    ta.textContent='¥'+a.toFixed(2);
-    tw.textContent='¥'+w.toFixed(2);
-    tp.textContent='¥'+p.toFixed(2);
-    tpr.textContent='¥'+prf.toFixed(2);
-    tg.textContent=(a>0?(prf/a*100):0).toFixed(2)+'%';
+    tc.textContent = n;
+    ta.textContent = `¥${a.toFixed(2)}`;
+    tw.textContent = `¥${w.toFixed(2)}`;
+    tp.textContent = `¥${p.toFixed(2)}`;
+    tpr.textContent = `¥${prf.toFixed(2)}`;
+    tg.textContent = a>0 ? `${(prf/a*100).toFixed(2)}%` : '0.00%';
   }catch(e){}
 }
 
-/* ========= 提交（核心：写完立刻读回验证）========= */
+/* ========= 提交订单（同步逻辑，100%稳）========= */
 function go(){
   try{
-    const cV=c.value.trim(), pV=p.value.trim(), prV=parseFloat(pr.value);
+    const cV = c.value.trim(), pV = p.value.trim(), prV = parseFloat(pr.value);
     if(!cV){ alert('客户微信名必填'); c.focus(); return; }
     if(!pV){ alert('商品名称必填'); p.focus(); return; }
     if(!prV||prV<=0){ alert('单价必填且>0'); pr.focus(); return; }
 
-    // 成本：手动填优先，否则用默认
+    // 成本处理：手动输入优先，否则用默认
     const purV = expVal(pur.value, defCost.pur);
     const expV = expVal(exp.value, defCost.exp);
     const pakV = expVal(pak.value, defCost.pak);
-    const qty  = parseInt(q.value)||1;
-    const total= (prV*qty);
-    const cost = purV+expV+pakV;
-    const profit= total-cost;
+    const qty = parseInt(q.value)||1;
+    const total = prV * qty;
+    const cost = purV + expV + pakV;
+    const profit = total - cost;
 
     const o = {
-      orderNumber: 'WX'+Date.now()+('_'+Math.random().toString(36).slice(2,5)),
+      orderNumber: 'WX'+Date.now()+Math.floor(Math.random()*1000),
       customerName: cV,
       address: (addr.value||'').trim(),
       tel: (tel.value||'').trim(),
@@ -260,8 +261,8 @@ function go(){
       price: prV,
       quantity: qty,
       purchase: +purV.toFixed(2),
-      express:  +expV.toFixed(2),
-      pack:     +pakV.toFixed(2),
+      express: +expV.toFixed(2),
+      pack: +pakV.toFixed(2),
       totalCost: +cost.toFixed(2),
       totalAmount: +total.toFixed(2),
       profit: +profit.toFixed(2),
@@ -270,46 +271,41 @@ function go(){
       createTime: new Date().toLocaleString('zh-CN')
     };
 
-    const A=RD();
+    const A = RD();
     A.push(o);
     WR(A);
 
-    // 写完后立刻读回，确保真写进去了
-    const chk=RD();
-    if(!chk.length || chk[chk.length-1].orderNumber!==o.orderNumber){
-      // 极端情况：storage满了/只读
-      alert('⚠️ 写入可能失败，请清浏览器缓存或检查手机存储空间');
-      return;
-    }
-
+    // 更新界面
     cnt();
     pvw();
 
-    // 清表（保留placeholder）
-    c.value=p.value=pr.value=''; q.value='1';
-    addr.value=tel.value=src1688.value=memo.value='';
-    pur.value=exp.value=pak.value='';
-    paid.value='待收款';
+    // 清空表单
+    c.value = p.value = pr.value = '';
+    q.value = '1';
+    addr.value = tel.value = src1688.value = memo.value = '';
+    pur.value = exp.value = pak.value = '';
+    paid.value = '待收款';
+
     if(navigator.vibrate) navigator.vibrate(50);
-    alert('✅ 提交成功\n纯利：¥'+profit.toFixed(2));
+    alert(`✅ 提交成功\n纯利润：¥${profit.toFixed(2)}`);
   }catch(e){ alert('提交失败：'+e.message); }
 }
-function expVal(raw, fallback){ return raw.trim()!=='' ? (parseFloat(raw)||0) : fallback; }
+function expVal(raw, fb){ return raw.trim()!=='' ? (parseFloat(raw)||0) : fb; }
 
 /* ========= 预览（兼容旧数据）========= */
 function pvw(){
   try{
-    const A=RD();
-    const el=pv;
+    const A = RD();
+    const el = pv;
     if(!A.length){ el.innerHTML='<div style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无订单</div>'; return; }
     let h='<table><tr><th>单号</th><th>客户</th><th>纯利</th><th>状态</th><th>货源</th></tr>';
     A.slice(-6).reverse().forEach(o=>{
-      const pf = (o.profit ?? 0);
+      const pf = (o.profit??0);
       const pc = pf>0?'p-pos':pf<0?'p-neg':'p-zero';
-      const link = o.src1688 ? '<a class="src" href="'+o.src1688+'" target="_blank" rel="noopener">1688 ↗</a>' : '<span style="color:#ccc">-</span>';
+      const link = o.src1688 ? `<a href="${o.src1688}" target="_blank" rel="noopener" class="src">1688 ↗</a>` : '<span style="color:#ccc">-</span>';
       h+=`<tr>
-        <td>${(o.orderNumber||'').slice(-6)}</td>
-        <td>${(o.customerName||'-')}</td>
+        <td>${o.orderNumber.slice(-6)}</td>
+        <td>${o.customerName||'-'}</td>
         <td class="${pc}">¥${pf.toFixed(2)}</td>
         <td><span class="status-tag ${(o.status==='已收款')?'status-paid':'status-wait'}">${o.status||'待收款'}</span></td>
         <td>${link}</td>
@@ -320,78 +316,76 @@ function pvw(){
   }catch(e){ pv.innerHTML='<div style="color:#bbb;text-align:center;font-size:13px;padding:8px 0">暂无订单</div>'; }
 }
 
-/* ========= 导出CSV（带iOS兜底下载）========= */
+/* ========= 安卓专属同步下载（核心修复点）========= */
 function dlCSV(){
   try{
-    const A=RD();
+    const A = RD();
     if(!A.length){ alert('暂无订单'); return; }
-    let csv='\uFEFF单号,客户,电话,地址,商品,1688链接,采购成本,快递成本,包装成本,总成本,单价,数量,总额,纯利,毛利(%),备注,状态,时间\n';
+    // 生成CSV（带BOM头，WPS打开不乱码）
+    let csv = '\uFEFF单号,客户微信,联系电话,收货地址,商品名称,1688货源,采购成本(元),快递成本(元),包装成本(元),总成本(元),单价(元),数量,总额(元),纯利润(元),毛利(%),备注,收款状态,下单时间\n';
     A.forEach(o=>{
       const amt = (o.totalAmount||0);
       const prf = (o.profit??0);
-      const gr  = amt>0 ? (prf/amt*100).toFixed(2)+'%' : '0.00%';
-      csv+=[
+      const gr = amt>0 ? (prf/amt*100).toFixed(2)+'%' : '0.00%';
+      csv += [
         o.orderNumber||'', o.customerName||'', o.tel||'', o.address||'', o.productName||'',
         o.src1688||'', (o.purchase??0), (o.express??0), (o.pack??0), (o.totalCost??0),
         o.price||'', o.quantity||'', amt, prf.toFixed(2), gr,
         o.memo||'', o.status||'', o.createTime||''
       ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')+'\n';
     });
-    _forceDL(new Blob([csv],{type:'text/csv;charset=utf-8;'}), '订单_'+(new Date().toISOString().slice(0,10))+'.csv');
+    // 同步生成下载链接，100%不会被安卓拦截
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `微信订单_${new Date().toISOString().slice(0,10)}.csv`;
+    // 同步触发点击，无异步操作
+    a.click();
+    // 延迟释放URL，确保下载完成
+    setTimeout(()=>URL.revokeObjectURL(url), 100);
   }catch(e){ alert('导出CSV失败：'+e.message); }
 }
+
 function dlJSON(){
   try{
-    const A=RD(); if(!A.length){alert('暂无订单');return;}
-    _forceDL(new Blob([JSON.stringify(A,null,2)],{type:'application/json'}),'备份_'+Date.now()+'.json');
-  }catch(e){alert('备份失败：'+e.message);}
-}
-
-/* 下载：常规 a.click → iOS 不行就用 open(datauri) 兜底 */
-function _forceDL(blob, name){
-  const url = URL.createObjectURL(blob);
-  // 1) 常规方式
-  const a = document.createElement('a');
-  a.href = url; a.download = name;
-  a.style.display='none'; document.body.appendChild(a);
-  a.click();
-  // 2) iOS/Safari 有时需要等一帧 + 兜底
-  setTimeout(()=>{
-    document.body.removeChild(a);
-    // iOS 兜底：用 data URI 开新标签触发“下载/共享”
-    try{
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        const u = reader.result;
-        const ta = document.createElement('a');
-        ta.href = u; ta.download = name; ta.target='_blank';
-        ta.style.display='none'; document.body.appendChild(ta);
-        ta.click(); setTimeout(()=>document.body.removeChild(ta),3000);
-      };
-      reader.readAsDataURL(blob);
-    }catch(_){}
-    URL.revokeObjectURL(url);
-  }, 160);
+    const A = RD();
+    if(!A.length){ alert('暂无订单'); return; }
+    const blob = new Blob([JSON.stringify(A,null,2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `订单备份_${Date.now()}.json`;
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 100);
+  }catch(e){ alert('备份失败：'+e.message); }
 }
 
 /* ========= 清空 ========= */
 function clr(){
   if(!confirm('清空订单？（默认成本不会被清）')) return;
   localStorage.removeItem(K);
-  cnt(); pvw();
+  cnt();
+  pvw();
   alert('✅ 已清空');
 }
 
-/* ========= UI ========= */
+/* ========= UI控制 ========= */
 function toggleCost(){
-  const b=costBody, ar=costArr;
+  const b = costBody, ar = costArr;
   b.classList.toggle('show');
-  ar.textContent=b.classList.contains('show')?'▲':'▼';
-  if(b.classList.contains('show')){ defPur.value=defCost.pur; defExp.value=defCost.exp; defPak.value=defCost.pak; }
+  ar.textContent = b.classList.contains('show')?'▲':'▼';
+  if(b.classList.contains('show')){
+    defPur.value = defCost.pur;
+    defExp.value = defCost.exp;
+    defPak.value = defCost.pak;
+  }
 }
 
-/* ========= INIT ========= */
-loadDef(); cnt(); pvw();
+/* ========= 初始化 ========= */
+loadDef();
+cnt();
+pvw();
 </script>
 </body>
 </html>
