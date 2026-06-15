@@ -48,7 +48,7 @@ body {
 .stat-profit { color: var(--red); } .stat-gross { color: #722ed1; }
 .stat-unpaid { color: #d46b08; }
 
-/* 卡片通用样式 */
+/* 通用卡片 */
 .main-card { background: var(--card); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); margin-bottom: 14px; }
 h2 { margin: 0 0 16px; font-size: 19px; font-weight: 600; text-align: center; }
 label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--text-main); }
@@ -81,20 +81,35 @@ textarea { min-height: 42px; resize: vertical; }
 .btna-o { background: #fff7e6; color: var(--orange); }
 .btna-g { background: #f5f5f5; color: #666; }
 
-/* 成本设置面板 */
+/* ===== Tap1 优化后的默认成本设置 ===== */
 .cost-setting { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; margin-bottom: 14px; }
 .cost-header { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 14px; font-weight: 600; }
 .cost-body { padding: 0 14px 14px; display: none; }
 .cost-body.show { display: block; }
-.cost-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.cost-form label { font-size: 11px; color: #666; display: block; margin-bottom: 3px; }
-.cost-form input { width: 100%; padding: 9px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; background: #f9fafb; }
+.cost-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cost-item { margin-bottom: 10px; }
+.cost-item label { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #666; margin-bottom: 4px; }
+.cost-tip { font-size: 10px; color: #999; margin-top: 2px; line-height: 1.2; }
 
 /* 商品行样式 */
 .product-row { margin-top: 12px; }
 .product-row + .product-row { border-top: 1px solid #f0f0f0; padding-top: 12px; }
 
-/* 数据概览样式 */
+/* ===== Tap2 新增：物料库存与采购信息模块 ===== */
+.material-overview {
+  background: var(--card); border-radius: var(--radius); padding: 14px;
+  box-shadow: var(--shadow); margin-bottom: 14px;
+}
+.material-overview h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #333; display: flex; align-items: center; gap: 6px; }
+.material-item { padding: 10px 0; border-top: 1px solid #f0f0f0; }
+.material-item:first-child { border-top: none; }
+.material-item .name { font-size: 13px; font-weight: 500; color: var(--text-main); margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+.material-item .info { font-size: 12px; color: #666; line-height: 1.5; }
+.material-item .info span { margin-right: 12px; }
+.material-item .link { color: var(--blue); text-decoration: underline; font-size: 11px; margin-top: 4px; display: inline-block; }
+.no-material { text-align: center; color: #bbb; font-size: 13px; padding: 12px 0; }
+
+/* 待收尾款列表 */
 .unpaid-list { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
 .unpaid-list h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #d46b08; }
 .unpaid-item { padding: 10px 0; border-top: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
@@ -103,6 +118,7 @@ textarea { min-height: 42px; resize: vertical; }
 .unpaid-info .time { font-size: 11px; color: #999; margin-top: 2px; }
 .unpaid-amount { font-size: 14px; font-weight: 600; color: #d46b08; }
 
+/* 最近订单预览 */
 .preview { background: var(--card); border-radius: var(--radius); padding: 14px; box-shadow: var(--shadow); margin-bottom: 14px; }
 .preview h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #6b7280; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -128,11 +144,53 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
   <div class="tab-item" onclick="switchTab('materials')">📦 物料管理</div>
 </div>
 
-<!-- Tab1：创建订单 -->
+<!-- Tab1：创建订单（默认显示） -->
 <div id="tab-create" class="tab-content active">
+  <!-- ===== 优化后的默认成本设置 ===== -->
+  <div class="cost-setting">
+    <div class="cost-header" onclick="toggleCost()">
+      ⚙️ 全局默认成本设置
+      <span id="costArr" style="font-size:12px;color:#999">▼</span>
+    </div>
+    <div class="cost-body" id="costBody">
+      <div class="cost-form">
+        <!-- 商品采购成本 -->
+        <div class="cost-item">
+          <label>🛍️ 默认商品采购成本(元/个)</label>
+          <input id="defPur" type="number" step="0.01" placeholder="0.00">
+          <div class="cost-tip">单商品采购成本，单订单可覆盖</div>
+        </div>
+        <!-- 快递成本 -->
+        <div class="cost-item">
+          <label>🚚 默认快递成本(元/单)</label>
+          <input id="defExp" type="number" step="0.01" placeholder="0.00">
+          <div class="cost-tip">每笔订单快递费，单订单可覆盖</div>
+        </div>
+        <!-- 订单包装成本 -->
+        <div class="cost-item">
+          <label>📦 默认订单包装成本(元/单)</label>
+          <input id="defPak" type="number" step="0.01" placeholder="0.00">
+          <div class="cost-tip">每笔订单通用包装费，单订单可覆盖</div>
+        </div>
+        <!-- 包装盒成本 -->
+        <div class="cost-item">
+          <label>📦 默认包装盒成本(元/个)</label>
+          <input id="defPackaging" type="number" step="0.01" placeholder="同步自物料管理" readonly>
+          <div class="cost-tip">自动同步自物料管理，无需手动修改</div>
+        </div>
+        <!-- 符纸成本 -->
+        <div class="cost-item">
+          <label>📜 默认符纸成本(元/张)</label>
+          <input id="defTalisman" type="number" step="0.01" placeholder="同步自物料管理" readonly>
+          <div class="cost-tip">自动同步自物料管理，无需手动修改</div>
+        </div>
+      </div>
+      <button class="btna btna-b" style="margin-top:10px;width:100%" onclick="saveDef()">保存默认成本</button>
+    </div>
+  </div>
+
   <div class="main-card">
     <h2>🛒 新建订单</h2>
-    
     <!-- 订单级信息 -->
     <div style="margin-bottom:12px"><label>客户微信名</label><input id="c" placeholder="必填"></div>
     <div style="margin-bottom:12px">
@@ -149,8 +207,8 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
 
     <!-- 订单级成本 -->
     <div class="input3">
-      <div><label>快递成本(元/单，不填用默认)</label><input id="exp" type="number" step="0.01" placeholder="不填则用默认"></div>
-      <div><label>订单包装成本(元/单，不填用默认)</label><input id="pak" type="number" step="0.01" placeholder="不填则用默认"></div>
+      <div><label>快递成本(元/单，不填用默认)</label><input id="exp" type="number" step="0.01" placeholder="不填用默认"></div>
+      <div><label>订单包装成本(元/单，不填用默认)</label><input id="pak" type="number" step="0.01" placeholder="不填用默认"></div>
       <div></div>
     </div>
 
@@ -169,7 +227,7 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
             <div><label>数量</label><input id="q0" type="number" value="1" min="1"></div>
           </div>
           <div style="margin-bottom:10px;"><label>商品1688货源链接</label><input id="src16880" placeholder="https://detail.1688.com/..."></div>
-          <div style="margin-bottom:10px;"><label>商品采购成本(元/个，不填用默认)</label><input id="pur0" type="number" step="0.01" placeholder="不填则用默认"></div>
+          <div style="margin-bottom:10px;"><label>商品采购成本(元/个，不填用默认)</label><input id="pur0" type="number" step="0.01" placeholder="不填用默认"></div>
         </div>
       </div>
       <button type="button" onclick="addProductRow()" style="width:100%; padding:10px; border:2px dashed #e5e7eb; border-radius:10px; background:#f9fafb; color:#666; font-size:13px; font-weight:600; cursor:pointer; margin-top:12px;">+ 添加更多商品</button>
@@ -200,31 +258,14 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
     <div class="action-bar">
       <button class="btna btna-b" onclick="dlCSV()">📥 导出CSV</button>
       <button class="btna btna-o" onclick="dlJSON()">💾 备份</button>
-      <button class="btna btna-g" onclick="clr()">🗑 清空</button>
-    </div>
-  </div>
-
-  <!-- 默认成本设置 -->
-  <div class="cost-setting">
-    <div class="cost-header" onclick="toggleCost()">
-      ⚙️ 默认成本设置
-      <span id="costArr" style="font-size:12px;color:#999">▼</span>
-    </div>
-    <div class="cost-body" id="costBody">
-      <div class="cost-form">
-        <div><label>默认采购成本(元/个)</label><input id="defPur" type="number" step="0.01" placeholder="0.00"></div>
-        <div><label>默认快递成本(元/单)</label><input id="defExp" type="number" step="0.01" placeholder="0.00"></div>
-        <div><label>默认订单包装成本(元/单)</label><input id="defPak" type="number" step="0.01" placeholder="0.00"></div>
-        <div><label>默认包装盒成本(元/个)</label><input id="defPackaging" type="number" step="0.01" placeholder="同步自物料管理"></div>
-        <div><label>默认符纸成本(元/张)</label><input id="defTalisman" type="number" step="0.01" placeholder="同步自物料管理"></div>
-      </div>
-      <button class="btna btna-b" style="margin-top:10px;width:100%" onclick="saveDef()">保存默认成本</button>
+      <button class="btna btna-g" onclick="clr()">🗑 清空</div>
     </div>
   </div>
 </div>
 
 <!-- Tab2：数据概览 -->
 <div id="tab-overview" class="tab-content">
+  <!-- 统计卡片 -->
   <div class="stats-grid">
     <div class="stat-card"><div class="stat-title">📦 今日订单</div><div class="stat-num stat-order" id="tc">0</div></div>
     <div class="stat-card"><div class="stat-title">💰 销售额</div><div class="stat-num stat-amount" id="ta">¥0.00</div></div>
@@ -235,6 +276,15 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
     <div class="stat-card"><div class="stat-title">💢 待收尾款</div><div class="stat-num stat-unpaid" id="tu">¥0.00</div></div>
   </div>
 
+  <!-- ===== 新增：物料库存与采购信息 ===== -->
+  <div class="material-overview" id="materialOverview">
+    <h3>📦 物料库存与采购信息</h3>
+    <div id="materialOverviewContent">
+      <div class="no-material">暂无物料信息，请前往「物料管理」配置</div>
+    </div>
+  </div>
+
+  <!-- 待收尾款列表 -->
   <div class="unpaid-list">
     <h3>💢 待收尾款客户</h3>
     <div id="unpaidList">
@@ -242,6 +292,7 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
     </div>
   </div>
 
+  <!-- 最近订单预览 -->
   <div class="preview">
     <h3>📃 最近订单</h3>
     <div id="pv"></div>
@@ -264,7 +315,6 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
       <div style="margin-bottom:10px;">
         <label>采购运费(元)</label>
         <input id="matPackFreight" type="number" step="0.01" placeholder="采购包装盒时的运费">
-        <span style="font-size:11px; color:#999; margin-left:6px;">（非寄给客户的快递费）</span>
       </div>
       <div style="padding:10px; background:#e8f5e9; border-radius:8px; font-size:13px; color:#2e7d32; margin-bottom:8px;">
         单个包装盒成本：<strong id="matPackUnitCost">0.00</strong> 元/个
@@ -281,7 +331,6 @@ td { padding: 7px 6px; border-top: 1px solid #f0f0f0; }
       <div style="margin-bottom:10px;">
         <label>采购运费(元)</label>
         <input id="matTalismanFreight" type="number" step="0.01" placeholder="采购符纸时的运费">
-        <span style="font-size:11px; color:#999; margin-left:6px;">（非寄给客户的快递费）</span>
       </div>
       <div style="padding:10px; background:#e8f5e9; border-radius:8px; font-size:13px; color:#2e7d32; margin-bottom:8px;">
         单张符纸成本：<strong id="matTalismanUnitCost">0.00</strong> 元/张
@@ -319,13 +368,14 @@ function switchTab(tab) {
   } else if (tab === 'overview') {
     document.querySelector('.tab-item:nth-child(2)').classList.add('active');
     document.getElementById('tab-overview').classList.add('active');
-    cnt();
-    renderUnpaidList();
-    pvw();
+    cnt(); // 刷新统计
+    renderUnpaidList(); // 刷新待收尾款
+    pvw(); // 刷新最近订单
+    renderMaterialOverview(); // 刷新物料概览
   } else if (tab === 'materials') {
     document.querySelector('.tab-item:nth-child(3)').classList.add('active');
     document.getElementById('tab-materials').classList.add('active');
-    loadMaterials();
+    loadMaterials(); // 加载物料数据
   }
 }
 
@@ -338,8 +388,8 @@ function loadDef(){
     document.getElementById('defPur').value = defCost.pur;
     document.getElementById('defExp').value = defCost.exp;
     document.getElementById('defPak').value = defCost.pak;
-    document.getElementById('defPackaging').value = defCost.packagingUnit;
-    document.getElementById('defTalisman').value = defCost.talismanUnit;
+    document.getElementById('defPackaging').value = defCost.packagingUnit.toFixed(2);
+    document.getElementById('defTalisman').value = defCost.talismanUnit.toFixed(2);
   } catch(e){}
 }
 function saveDef(){
@@ -363,19 +413,20 @@ function toggleCost(){
 /* ========= 物料管理 ========= */
 function loadMaterials(){
   try {
-    const m = JSON.parse(localStorage.getItem(MK) || '{"packaging":{"count":0,"unitCost":0},"talisman":{"count":0,"unitCost":0}}');
-    // 填充输入框
+    const m = JSON.parse(localStorage.getItem(MK) || '{"packaging":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0},"talisman":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0}}');
+    // 填充物料管理输入框
     document.getElementById('matPackPurchase').value = m.packaging.purchasePrice || '';
     document.getElementById('matPackCount').value = m.packaging.count || '';
     document.getElementById('matPackLink').value = m.packaging.link || '';
     document.getElementById('matPackFreight').value = m.packaging.freight || '';
+    document.getElementById('matPackUnitCost').textContent = (m.packaging.unitCost || 0).toFixed(2);
+    
     document.getElementById('matTalismanPurchase').value = m.talisman.purchasePrice || '';
     document.getElementById('matTalismanCount').value = m.talisman.count || '';
     document.getElementById('matTalismanLink').value = m.talisman.link || '';
     document.getElementById('matTalismanFreight').value = m.talisman.freight || '';
-    // 更新单位成本显示
-    document.getElementById('matPackUnitCost').textContent = (m.packaging.unitCost || 0).toFixed(2);
     document.getElementById('matTalismanUnitCost').textContent = (m.talisman.unitCost || 0).toFixed(2);
+    
     // 库存预警
     const packWarn = document.getElementById('matPackStockWarning');
     const talismanWarn = document.getElementById('matTalismanStockWarning');
@@ -387,19 +438,68 @@ function loadMaterials(){
       : `<span style="color:#666; font-size:12px;">当前库存：${m.talisman.count}张</span>`;
   } catch(e){}
 }
+
+/* ===== 新增：渲染Tap2的物料概览模块 ===== */
+function renderMaterialOverview(){
+  try {
+    const m = JSON.parse(localStorage.getItem(MK) || '{"packaging":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0},"talisman":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0}}');
+    const container = document.getElementById('materialOverviewContent');
+    
+    if(m.packaging.count === 0 && m.talisman.count === 0){
+      container.innerHTML = '<div class="no-material">暂无物料信息，请前往「物料管理」配置</div>';
+      return;
+    }
+    
+    let html = '';
+    // 包装盒信息
+    if(m.packaging.count > 0){
+      html += `
+        <div class="material-item">
+          <div class="name">📦 包装盒</div>
+          <div class="info">
+            <span>库存：${m.packaging.count}个</span>
+            <span>单位成本：¥${m.packaging.unitCost.toFixed(2)}/个</span>
+            <span>总进价：¥${(m.packaging.purchasePrice + m.packaging.freight).toFixed(2)}</span>
+            <span>采购运费：¥${m.packaging.freight.toFixed(2)}</span>
+          </div>
+          ${m.packaging.link ? `<a href="${m.packaging.link}" target="_blank" class="link">1688采购链接 ↗</a>` : ''}
+        </div>
+      `;
+    }
+    // 符纸信息
+    if(m.talisman.count > 0){
+      html += `
+        <div class="material-item">
+          <div class="name">📜 符纸</div>
+          <div class="info">
+            <span>库存：${m.talisman.count}张</span>
+            <span>单位成本：¥${m.talisman.unitCost.toFixed(2)}/张</span>
+            <span>总进价：¥${(m.talisman.purchasePrice + m.talisman.freight).toFixed(2)}</span>
+            <span>采购运费：¥${m.talisman.freight.toFixed(2)}</span>
+          </div>
+          ${m.talisman.link ? `<a href="${m.talisman.link}" target="_blank" class="link">1688采购链接 ↗</a>` : ''}
+        </div>
+      `;
+    }
+    container.innerHTML = html;
+  } catch(e){
+    document.getElementById('materialOverviewContent').innerHTML = '<div class="no-material">加载物料信息失败</div>';
+  }
+}
+
 function saveMaterials(){
   try {
     const packPurchase = parseFloat(document.getElementById('matPackPurchase').value) || 0;
     const packCount = parseInt(document.getElementById('matPackCount').value) || 0;
     const packLink = document.getElementById('matPackLink').value.trim();
     const packFreight = parseFloat(document.getElementById('matPackFreight').value) || 0;
-    const packUnitCost = packCount > 0 ? (packPurchase / packCount) : 0;
+    const packUnitCost = packCount > 0 ? (packPurchase + packFreight) / packCount : 0;
 
     const talismanPurchase = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
     const talismanCount = parseInt(document.getElementById('matTalismanCount').value) || 0;
     const talismanLink = document.getElementById('matTalismanLink').value.trim();
     const talismanFreight = parseFloat(document.getElementById('matTalismanFreight').value) || 0;
-    const talismanUnitCost = talismanCount > 0 ? (talismanPurchase / talismanCount) : 0;
+    const talismanUnitCost = talismanCount > 0 ? (talismanPurchase + talismanFreight) / talismanCount : 0;
 
     const materials = {
       packaging: {
@@ -418,38 +518,42 @@ function saveMaterials(){
       }
     };
     localStorage.setItem(MK, JSON.stringify(materials));
+    
     // 同步到默认成本
     defCost.packagingUnit = packUnitCost;
     defCost.talismanUnit = talismanUnitCost;
     localStorage.setItem(CK, JSON.stringify(defCost));
+    
     // 更新UI
     document.getElementById('defPackaging').value = packUnitCost.toFixed(2);
     document.getElementById('defTalisman').value = talismanUnitCost.toFixed(2);
-    loadMaterials(); // 刷新库存显示
+    loadMaterials(); // 刷新物料管理页
+    renderMaterialOverview(); // 刷新概览页
+    
     alert('✅ 物料设置保存成功！');
   } catch(e){ alert('保存失败：'+e.message); }
 }
+
 // 实时计算单位成本
-document.getElementById('matPackPurchase').addEventListener('input', function(){
-  const purchase = parseFloat(this.value) || 0;
-  const count = parseInt(document.getElementById('matPackCount').value) || 0;
-  document.getElementById('matPackUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
-});
-document.getElementById('matPackCount').addEventListener('input', function(){
+document.getElementById('matPackPurchase').addEventListener('input', calcPackUnitCost);
+document.getElementById('matPackCount').addEventListener('input', calcPackUnitCost);
+document.getElementById('matPackFreight').addEventListener('input', calcPackUnitCost);
+function calcPackUnitCost(){
   const purchase = parseFloat(document.getElementById('matPackPurchase').value) || 0;
-  const count = parseInt(this.value) || 0;
-  document.getElementById('matPackUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
-});
-document.getElementById('matTalismanPurchase').addEventListener('input', function(){
-  const purchase = parseFloat(this.value) || 0;
-  const count = parseInt(document.getElementById('matTalismanCount').value) || 0;
-  document.getElementById('matTalismanUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
-});
-document.getElementById('matTalismanCount').addEventListener('input', function(){
+  const count = parseInt(document.getElementById('matPackCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matPackFreight').value) || 0;
+  document.getElementById('matPackUnitCost').textContent = count > 0 ? ((purchase + freight) / count).toFixed(2) : '0.00';
+}
+
+document.getElementById('matTalismanPurchase').addEventListener('input', calcTalismanUnitCost);
+document.getElementById('matTalismanCount').addEventListener('input', calcTalismanUnitCost);
+document.getElementById('matTalismanFreight').addEventListener('input', calcTalismanUnitCost);
+function calcTalismanUnitCost(){
   const purchase = parseFloat(document.getElementById('matTalismanPurchase').value) || 0;
-  const count = parseInt(this.value) || 0;
-  document.getElementById('matTalismanUnitCost').textContent = count > 0 ? (purchase / count).toFixed(2) : '0.00';
-});
+  const count = parseInt(document.getElementById('matTalismanCount').value) || 0;
+  const freight = parseFloat(document.getElementById('matTalismanFreight').value) || 0;
+  document.getElementById('matTalismanUnitCost').textContent = count > 0 ? ((purchase + freight) / count).toFixed(2) : '0.00';
+}
 
 /* ========= 商品行管理 ========= */
 function addProductRow(){
@@ -469,7 +573,7 @@ function addProductRow(){
       <div><label>数量</label><input id="q${itemIndex}" type="number" value="1" min="1"></div>
     </div>
     <div style="margin-bottom:10px;"><label>商品1688货源链接</label><input id="src1688${itemIndex}" placeholder="https://detail.1688.com/..."></div>
-    <div style="margin-bottom:10px;"><label>商品采购成本(元/个，不填用默认)</label><input id="pur${itemIndex}" type="number" step="0.01" placeholder="不填则用默认"></div>
+    <div style="margin-bottom:10px;"><label>商品采购成本(元/个，不填用默认)</label><input id="pur${itemIndex}" type="number" step="0.01" placeholder="不填用默认"></div>
   `;
   container.appendChild(newRow);
 }
@@ -540,7 +644,7 @@ function go(){
     const orderExpressCost = parseFloat(exp.value) || defCost.exp;
     const orderPackCost = parseFloat(pak.value) || defCost.pak;
 
-    // 3. 收集商品信息
+    // 3. 收集商品信息 & 计算总数量
     let totalQuantity = 0;
     const items = [];
     let hasError = false;
@@ -598,7 +702,7 @@ function go(){
       if(depositVal >= totalSales){ alert('定金不能大于等于商品总金额！'); deposit.focus(); return; }
     }
 
-    // 6. 计算成本利润
+    // 6. 计算成本利润（含物料）
     const packagingUnitCost = materials.packaging.unitCost || defCost.packagingUnit;
     const talismanUnitCost = materials.talisman.unitCost || defCost.talismanUnit;
     const expressSharePerItem = totalQuantity > 0 ? orderExpressCost / totalQuantity : 0;
@@ -611,7 +715,7 @@ function go(){
       item.talismanCost = talismanUnitCost;
       item.expressShare = expressSharePerItem;
       item.packShare = packSharePerItem;
-      item.itemTotalCost = (item.purchaseCost + item.packagingCost + item.talismanCost + expressSharePerItem + packSharePerItem) * item.quantity;
+      item.itemTotalCost = (item.purchaseCost + item.packagingCost + item.talismanCost + item.expressShare + item.packShare) * item.quantity;
       item.itemProfit = item.productTotal - item.itemTotalCost;
       orderTotalCost += item.itemTotalCost;
       orderTotalProfit += item.itemProfit;
@@ -710,6 +814,8 @@ function cnt(){
     document.getElementById('tu').textContent = `¥${u.toFixed(2)}`;
   }catch(e){}
 }
+
+/* ========= 待收尾款列表 ========= */
 function renderUnpaidList(){
   try{
     const orders = JSON.parse(localStorage.getItem(K) || '[]');
@@ -736,6 +842,8 @@ function renderUnpaidList(){
     el.innerHTML = html;
   }catch(e){}
 }
+
+/* ========= 最近订单预览 ========= */
 function pvw(){
   try{
     const orders = JSON.parse(localStorage.getItem(K) || '[]');
@@ -748,6 +856,7 @@ function pvw(){
       let statusClass = 'status-paid';
       if(o.status === '待收款') statusClass = 'status-wait';
       if(o.status === '待收款（定金）') statusClass = 'status-deposit';
+      
       // 取第一个商品的链接作为预览
       const firstItem = o.items && o.items[0] ? o.items[0] : {};
       const link = firstItem.src1688 ? `<a href="${firstItem.src1688}" target="_blank" rel="noopener" class="src">1688 ↗</a>` : '<span style="color:#ccc">-</span>';
@@ -764,30 +873,37 @@ function pvw(){
   }catch(e){}
 }
 
-/* ========= 导出功能（兼容多商品/旧订单） ========= */
+/* ========= 导出CSV（新增物料汇总）========= */
 function dlCSV(){
   try{
     const orders = JSON.parse(localStorage.getItem(K) || '[]');
     if(!orders.length){ alert('暂无订单'); return; }
-    let csv = '\uFEFF订单号,客户微信,联系电话,收货地址,商品名称,商品单价(元),商品数量,商品总金额(元),商品1688链接,商品采购成本(元/个),包装盒成本(元/个),符纸成本(元/张),分摊快递成本(元/个),分摊订单包装成本(元/个),商品总成本(元),已付定金(元),未付尾款(元),纯利润(元),毛利(%),订单备注,收款状态,下单时间\n';
+    
+    // ===== 新增：物料汇总信息 =====
+    const materials = JSON.parse(localStorage.getItem(MK) || '{"packaging":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0},"talisman":{"purchasePrice":0,"count":0,"link":"","freight":0,"unitCost":0}}');
+    let csv = '\uFEFF【物料采购信息汇总】\n';
+    csv += '物料类型,当前库存,单位成本(元),总进价(元),采购运费(元),采购链接\n';
+    csv += `包装盒,${materials.packaging.count}个,¥${materials.packaging.unitCost.toFixed(2)}/个,¥${(materials.packaging.purchasePrice + materials.packaging.freight).toFixed(2)},¥${materials.packaging.freight.toFixed(2)},"${materials.packaging.link||'无'}"\n`;
+    csv += `符纸,${materials.talisman.count}张,¥${materials.talisman.unitCost.toFixed(2)}/张,¥${(materials.talisman.purchasePrice + materials.talisman.freight).toFixed(2)},¥${materials.talisman.freight.toFixed(2)},"${materials.talisman.link||'无'}"\n\n`;
+    
+    // 订单明细
+    csv += '【订单明细】\n';
+    csv += '订单号,客户微信,联系电话,收货地址,商品名称,商品单价(元),商品数量,商品总金额(元),商品1688链接,商品采购成本(元/个),包装盒成本(元/个),符纸成本(元/张),分摊快递成本(元/个),分摊订单包装成本(元/个),商品总成本(元),已付定金(元),未付尾款(元),纯利润(元),毛利(%),订单备注,收款状态,下单时间\n';
     
     orders.forEach(order => {
       // 兼容旧订单（无items数组）
       if(!order.items || order.items.length === 0){
         const amt = parseFloat(order.totalAmount) || 0;
-        const prf = parseFloat(order.profit) || 0;
-        const gr = amt > 0 ? (prf / amt * 100).toFixed(2) + '%' : '0.00%';
+        const pf = parseFloat(order.profit) || 0;
+        const gr = amt > 0 ? (pf / amt * 100).toFixed(2) + '%' : '0.00%';
         const prefix = order.status === '待收款（定金）' ? '【定金】' : '';
         const row = [
           order.orderNumber || '', order.customerName || '', order.tel || '', order.address || '',
           order.productName || '', order.price || '', order.quantity || 1, amt,
-          order.src1688 || '', order.purchase || 0, 0, 0,
-          (parseFloat(order.express) || 0) / (order.quantity || 1),
-          (parseFloat(order.pack) || 0) / (order.quantity || 1),
-          parseFloat(order.totalCost) || 0,
-          parseFloat(order.deposit) || 0, parseFloat(order.unpaid) || 0,
-          prf.toFixed(2), gr, order.memo || '', prefix + (order.status || '已收款'), order.createTime || ''
-        ].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n';
+          order.src1688 || '', order.purchase || 0, 0, 0, 0, 0, parseFloat(order.totalCost) || 0,
+          parseFloat(order.deposit) || 0, parseFloat(order.unpaid) || 0, pf.toFixed(2), gr,
+          order.memo || '', prefix + (order.status || '已收款'), order.createTime || ''
+        ].map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',') + '\n';
         csv += row;
       } else {
         // 新订单：多商品分行
@@ -796,19 +912,20 @@ function dlCSV(){
           const itemCost = parseFloat(item.itemTotalCost) || 0;
           const itemProfit = parseFloat(item.itemProfit) || 0;
           const gr = itemTotal > 0 ? (itemProfit / itemTotal * 100).toFixed(2) + '%' : '0.00%';
-          const prefix = order.status === '待收款（定金）' ? '【定金】' : '';
+          const prefix = order.status === '待收款（定金）' && idx === 0 ? '【定金】' : '';
+          
           const row = [
             order.orderNumber, order.customerName, order.tel, order.address,
-            item.productName, item.price, item.quantity, itemTotal, item.src1688 || '',
-            item.purchaseCost, item.packagingCost, item.talismanCost,
-            item.expressShare, item.packShare, itemCost,
+            item.productName, item.price, item.quantity, itemTotal,
+            item.src1688 || '', item.purchaseCost, item.packagingCost || 0, item.talismanCost || 0,
+            item.expressShare || 0, item.packShare || 0, itemCost,
             idx === 0 ? parseFloat(order.deposit) || 0 : 0,
             idx === 0 ? parseFloat(order.unpaid) || 0 : 0,
             itemProfit.toFixed(2), gr,
             idx === 0 ? order.memo || '' : '',
             prefix + order.status,
             idx === 0 ? order.createTime || '' : ''
-          ].map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',') + '\n';
+          ].map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',') + '\n';
           csv += row;
         });
       }
@@ -824,6 +941,7 @@ function dlCSV(){
     setTimeout(()=>URL.revokeObjectURL(url), 100);
   }catch(e){ alert('导出CSV失败：'+e.message); }
 }
+
 function dlJSON(){
   try{
     const orders = JSON.parse(localStorage.getItem(K) || '[]');
@@ -837,6 +955,7 @@ function dlJSON(){
     setTimeout(()=>URL.revokeObjectURL(url), 100);
   }catch(e){ alert('备份失败：'+e.message); }
 }
+
 function clr(){
   if(!confirm('清空订单？（默认成本和物料库存不会被清）')) return;
   localStorage.removeItem(K);
@@ -849,11 +968,9 @@ function clr(){
 /* ========= 初始化 ========= */
 window.onload = function(){
   loadDef();
-  loadMaterials();
-  cnt();
-  renderUnpaidList();
-  pvw();
   toggleDeposit();
+  // 默认显示创建订单Tab
+  switchTab('create');
 };
 </script>
 </body>
