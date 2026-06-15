@@ -19,13 +19,24 @@ body {
   max-width: 540px; margin: 0 auto; padding: 12px; background: var(--bg);
 }
 
-/* 统计卡片 */
-.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.stat-card { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
-.stat-title { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
-.stat-num { font-size: 22px; font-weight: 700; }
+/* 统计卡片：3列适配新增指标 */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat-card { background: var(--card); border-radius: var(--radius); padding: 14px 10px; box-shadow: var(--shadow); text-align: center; }
+.stat-title { font-size: 11px; color: #6b7280; margin-bottom: 6px; font-weight: 500; }
+.stat-num { font-size: 18px; font-weight: 700; word-break: break-all; }
 .stat-order { color: var(--blue); } .stat-amount { color: var(--primary); }
 .stat-wait { color: var(--orange); } .stat-paid { color: #52c41a; }
+.stat-profit { color: #cf1322; } .stat-gross { color: #722ed1; }
+
+/* 成本设置面板 */
+.cost-setting { background: var(--card); border-radius: var(--radius); padding: 0; margin-bottom: 16px; box-shadow: var(--shadow); overflow: hidden; transition: all 0.3s ease; }
+.cost-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.cost-header:hover { background: #f9fafb; }
+.cost-body { padding: 0 16px 16px; display: none; }
+.cost-body.show { display: block; }
+.cost-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.cost-item label { font-size: 12px; color: #666; margin-bottom: 4px; display: block; }
+.cost-item input { width: 100%; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; background: #f9fafb; }
 
 /* 主卡片 */
 .main-card { background: var(--card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 16px; }
@@ -34,43 +45,81 @@ label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; c
 input, textarea, select {
   width: 100%; padding: 12px 14px; border: 1px solid #e5e7eb;
   border-radius: 10px; font-size: 15px; background: #f9fafb;
+  transition: all 0.2s;
 }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(7,193,96,0.1); }
 textarea { min-height: 44px; resize: vertical; }
+
+/* 成本输入框组 */
+.cost-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.cost-input label { font-size: 12px; color: #666; margin-bottom: 4px; display: block; }
+.cost-input input { padding: 10px 12px; font-size: 13px; }
+
 .btn {
   width: 100%; padding: 14px; border: none; border-radius: 12px;
   font-size: 16px; font-weight: 600; color: #fff;
   background: linear-gradient(135deg, #06d160, #0aab5a); margin-top: 8px;
+  cursor: pointer; transition: all 0.2s;
 }
-.btn:active { transform: scale(0.98); }
+.btn:active { transform: scale(0.98); opacity: 0.9; }
+.btn-blue { background: var(--blue); padding: 10px 14px; font-size: 13px; border-radius: 10px; margin-top: 0; }
 
-/* 操作栏 */
 .action-bar { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
 .btn-action { padding: 10px 8px; font-size: 12px; border-radius: 10px; font-weight: 500; border: none; cursor: pointer; }
-.btn-blue { background: #eef4ff; color: var(--blue); }
-.btn-orange { background: #fff7e6; color: var(--orange); }
-.btn-gray { background: #f5f5f5; color: #666; }
+.btn-blue-outline { background: #eef4ff; color: var(--blue); }
+.btn-orange-outline { background: #fff7e6; color: var(--orange); }
+.btn-gray-outline { background: #f5f5f5; color: #666; }
 
 /* 预览表 */
 .preview { margin-top: 20px; }
 .preview h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #6b7280; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 th { background: #f9fafb; color: #999; font-weight: 500; padding: 8px 6px; text-align: left; }
-td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
+td { padding: 8px 6px; border-top: 1px solid #f0f0f0; color: var(--text-main); }
 .status-tag { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
 .status-wait { background: #fff7e6; color: #d46b08; }
 .status-paid { background: #f6ffed; color: #389e0d; }
+.profit-positive { color: #389e0d; } .profit-negative { color: #cf1322; } .profit-zero { color: #999; }
+.source-link { color: var(--blue); text-decoration: none; } .source-link:hover { text-decoration: underline; }
 
 .tip { text-align: center; font-size: 11px; color: #bbb; margin-top: 16px; }
 </style>
 </head>
 <body>
 
-<!-- 当日统计 -->
+<!-- 当日统计（新增纯利/毛利） -->
 <div class="stats-grid">
   <div class="stat-card"><div class="stat-title">📦 今日订单</div><div class="stat-num stat-order" id="todayCount">0</div></div>
   <div class="stat-card"><div class="stat-title">💰 今日销售额</div><div class="stat-num stat-amount" id="todayAmount">¥0.00</div></div>
   <div class="stat-card"><div class="stat-title">⏳ 待收款</div><div class="stat-num stat-wait" id="todayWait">¥0.00</div></div>
   <div class="stat-card"><div class="stat-title">✅ 已收款</div><div class="stat-num stat-paid" id="todayPaid">¥0.00</div></div>
+  <div class="stat-card"><div class="stat-title">💸 今日纯利</div><div class="stat-num stat-profit" id="todayProfit">¥0.00</div></div>
+  <div class="stat-card"><div class="stat-title">📈 今日毛利</div><div class="stat-num stat-gross" id="todayGross">0.00%</div></div>
+</div>
+
+<!-- 成本设置面板（固定位置修改默认值） -->
+<div class="cost-setting">
+  <div class="cost-header" onclick="toggleCostSetting()">
+    <span style="font-weight:600; font-size:14px;">⚙️ 默认成本设置</span>
+    <span id="costArrow" style="font-size:12px; color:#999;">▼</span>
+  </div>
+  <div class="cost-body" id="costBody">
+    <div class="cost-form">
+      <div class="cost-item">
+        <label>默认采购成本(元)</label>
+        <input type="number" step="0.01" id="defaultPurchase" placeholder="0.00">
+      </div>
+      <div class="cost-item">
+        <label>默认快递成本(元)</label>
+        <input type="number" step="0.01" id="defaultExpress" placeholder="0.00">
+      </div>
+      <div class="cost-item">
+        <label>默认包装成本(元)</label>
+        <input type="number" step="0.01" id="defaultPack" placeholder="0.00">
+      </div>
+    </div>
+    <button class="btn-blue" onclick="saveDefaultCost()" style="margin-top:12px; width:100%;">保存默认成本</button>
+  </div>
 </div>
 
 <!-- 订单录入 -->
@@ -79,14 +128,17 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
   
   <div class="form-group"><label>客户微信名</label><input id="c" placeholder="必填，例：小明"/></div>
   
-  <!-- 智能粘贴地址 -->
+  <!-- 1688货源链接 -->
+  <div class="form-group"><label>1688货源链接</label><input id="source1688" placeholder="采购链接，例：https://detail.1688.com/..."/></div>
+  
+  <!-- 地址智能粘贴 -->
   <div class="form-group">
     <label>收货地址（粘贴整段自动识别电话）</label>
     <div style="display:flex;gap:8px;align-items:stretch">
       <textarea id="addr" rows="2" style="flex:1" placeholder="例：浙江省杭州市...张先生150****1234"
         onpaste="setTimeout(doSmartPaste,0)"></textarea>
       <div style="display:flex;flex-direction:column;justify-content:center">
-        <button type="button" onclick="doSmartPaste()" style="padding:7px 10px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-size:11px;font-weight:600;cursor:pointer;">📋 识别</button>
+        <button type="button" onclick="doSmartPaste()" style="padding:7px 10px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;">📋 识别</button>
       </div>
     </div>
   </div>
@@ -94,14 +146,29 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
   <div class="form-group"><label>联系电话</label><input id="tel" type="tel" inputmode="numeric" placeholder="自动识别/手动补"/></div>
   <div class="form-group"><label>商品名称</label><input id="p" placeholder="必填，例：头层牛皮钱包"/></div>
   
+  <!-- 成本输入框（不填用默认值） -->
+  <div class="cost-group">
+    <div class="cost-input">
+      <label>采购成本(元)</label>
+      <input type="number" step="0.01" id="purchase" placeholder="不填用默认值">
+    </div>
+    <div class="cost-input">
+      <label>快递成本(元)</label>
+      <input type="number" step="0.01" id="express" placeholder="不填用默认值">
+    </div>
+    <div class="cost-input">
+      <label>包装成本(元)</label>
+      <input type="number" step="0.01" id="pack" placeholder="不填用默认值">
+    </div>
+  </div>
+  
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
     <div class="form-group"><label>单价(元)</label><input id="pr" type="number" step="0.01" placeholder="0.00"/></div>
     <div class="form-group"><label>数量</label><input id="q" type="number" value="1" min="1"/></div>
   </div>
   
   <div class="form-group"><label>订单备注</label><input id="memo" placeholder="颜色/尺寸/特殊要求"/></div>
-  <div class="form-group">
-    <label>收款状态</label>
+  <div class="form-group"><label>收款状态</label>
     <select id="paid">
       <option value="待收款">⏳ 待收款</option>
       <option value="已收款">✅ 已收款</option>
@@ -110,37 +177,43 @@ td { padding: 8px 6px; border-top: 1px solid #f0f0f0; }
 
   <button class="btn" onclick="go()">📋 提交订单</button>
 
-  <!-- 批量操作 -->
   <div class="action-bar">
-    <button class="btn-action btn-blue" onclick="downloadCSV()">📥 导出CSV</button>
-    <button class="btn-action btn-orange" onclick="downloadJSON()">💾 备份</button>
-    <button class="btn-action btn-gray" onclick="clearOrders()">🗑 清空</button>
+    <button class="btn-action btn-blue-outline" onclick="downloadCSV()">📥 导出CSV</button>
+    <button class="btn-action btn-orange-outline" onclick="downloadJSON()">💾 备份</button>
+    <button class="btn-action btn-gray-outline" onclick="clearOrders()">🗑 清空</button>
   </div>
 </div>
 
 <!-- 最近订单预览 -->
 <div class="main-card preview">
-  <h3>📃 最近订单</h3>
+  <h3>📃 最近订单（含利润）</h3>
   <div id="preview"></div>
   <p class="tip">数据仅保存在本机，导出后建议定期备份</p>
 </div>
 
 <script>
-// ==================== 基础工具（容错拉满）====================
+// ==================== 基础配置 ====================
 const KEY = 'wechatOrders';
-const safeLoad = () => {
-  try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
-  catch(e) { return []; }
+const COST_KEY = 'orderDefaultCost'; // 默认成本存储key
+
+// 默认成本初始值
+let defaultCost = { purchase: 0, express: 0, pack: 0 };
+
+// ==================== 工具函数（容错拉满）====================
+const safeLoad = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { return []; } };
+const safeSave = (arr) => { try { localStorage.setItem(KEY, JSON.stringify(arr)); } catch(e) { alert('存储失败，可能空间不足'); } };
+const loadDefaultCost = () => {
+  try {
+    const saved = localStorage.getItem(COST_KEY);
+    if (saved) defaultCost = JSON.parse(saved);
+    updateCostPlaceholders(); // 更新输入框placeholder
+  } catch(e) {}
 };
-const safeSave = (arr) => {
-  try { localStorage.setItem(KEY, JSON.stringify(arr)); }
-  catch(e) { alert('存储失败，可能手机空间不足'); }
+const saveDefaultCostToStorage = () => {
+  try { localStorage.setItem(COST_KEY, JSON.stringify(defaultCost)); } catch(e) {}
 };
 const todayStr = () => {
-  try {
-    const d = new Date();
-    return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
-  } catch(e) { return ''; }
+  try { const d = new Date(); return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`; } catch(e) { return ''; }
 };
 const triggerDown = (blob, name) => {
   try {
@@ -152,6 +225,42 @@ const triggerDown = (blob, name) => {
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
   } catch(e) { alert('下载失败：' + e.message); }
+};
+
+// ==================== 成本设置相关 ====================
+const toggleCostSetting = () => {
+  try {
+    const body = document.getElementById('costBody');
+    const arrow = document.getElementById('costArrow');
+    body.classList.toggle('show');
+    arrow.textContent = body.classList.contains('show') ? '▲' : '▼';
+    // 打开时填充当前默认值
+    if (body.classList.contains('show')) {
+      document.getElementById('defaultPurchase').value = defaultCost.purchase;
+      document.getElementById('defaultExpress').value = defaultCost.express;
+      document.getElementById('defaultPack').value = defaultCost.pack;
+    }
+  } catch(e) {}
+};
+
+const saveDefaultCost = () => {
+  try {
+    const purchase = parseFloat(document.getElementById('defaultPurchase').value) || 0;
+    const express = parseFloat(document.getElementById('defaultExpress').value) || 0;
+    const pack = parseFloat(document.getElementById('defaultPack').value) || 0;
+    defaultCost = { purchase, express, pack };
+    saveDefaultCostToStorage();
+    updateCostPlaceholders();
+    alert('✅ 默认成本保存成功！');
+  } catch(e) { alert('保存失败：' + e.message); }
+};
+
+const updateCostPlaceholders = () => {
+  try {
+    document.getElementById('purchase').placeholder = `不填则用默认值${defaultCost.purchase.toFixed(2)}元`;
+    document.getElementById('express').placeholder = `不填则用默认值${defaultCost.express.toFixed(2)}元`;
+    document.getElementById('pack').placeholder = `不填则用默认值${defaultCost.pack.toFixed(2)}元`;
+  } catch(e) {}
 };
 
 // ==================== 智能粘贴（兼容你的测试格式）====================
@@ -176,98 +285,169 @@ const doSmartPaste = () => {
   } catch(e) {}
 };
 
-// ==================== 当日统计（故障不影响提交）====================
+// ==================== 当日统计（含纯利/毛利）====================
 const countToday = () => {
   try {
     const today = todayStr();
     if (!today) return;
     const orders = safeLoad();
-    let count=0, amount=0, wait=0, paid=0;
+    let count=0, amount=0, wait=0, paid=0, profit=0;
+    
     orders.forEach(o => {
       if (o.createTime && o.createTime.startsWith(today)) {
-        count++; amount += parseFloat(o.totalAmount || 0);
-        if (o.status === '待收款') wait += parseFloat(o.totalAmount || 0);
-        if (o.status === '已收款') paid += parseFloat(o.totalAmount || 0);
+        count++;
+        const total = parseFloat(o.totalAmount) || 0;
+        amount += total;
+        if (o.status === '待收款') wait += total;
+        if (o.status === '已收款') paid += total;
+        // 累加纯利润
+        profit += (parseFloat(o.profit) || 0);
       }
     });
+    
+    // 计算毛利
+    const gross = amount > 0 ? (profit / amount) * 100 : 0;
+    
     document.getElementById('todayCount').textContent = count;
     document.getElementById('todayAmount').textContent = `¥${amount.toFixed(2)}`;
     document.getElementById('todayWait').textContent = `¥${wait.toFixed(2)}`;
     document.getElementById('todayPaid').textContent = `¥${paid.toFixed(2)}`;
-  } catch(e) {}
+    document.getElementById('todayProfit').textContent = `¥${profit.toFixed(2)}`;
+    document.getElementById('todayGross').textContent = `${gross.toFixed(2)}%`;
+  } catch(e) { console.error('统计出错：', e); }
 };
 
 // ==================== 提交订单（核心功能，绝对稳）====================
 const go = () => {
   try {
-    // 取元素
+    // 取表单元素
     const cEl = document.getElementById('c');
     const pEl = document.getElementById('p');
     const prEl = document.getElementById('pr');
     const qEl = document.getElementById('q');
     const addrEl = document.getElementById('addr');
     const telEl = document.getElementById('tel');
+    const sourceEl = document.getElementById('source1688');
     const memoEl = document.getElementById('memo');
     const paidEl = document.getElementById('paid');
+    const purchaseEl = document.getElementById('purchase');
+    const expressEl = document.getElementById('express');
+    const packEl = document.getElementById('pack');
 
-    // 校验必填
-    if (!cEl.value.trim()) { alert('请填写客户微信名'); cEl.focus(); return; }
-    if (!pEl.value.trim()) { alert('请填写商品名称'); pEl.focus(); return; }
+    // 校验必填项
+    const c = cEl.value.trim();
+    const p = pEl.value.trim();
     const pr = parseFloat(prEl.value);
+    if (!c) { alert('请填写客户微信名'); cEl.focus(); return; }
+    if (!p) { alert('请填写商品名称'); pEl.focus(); return; }
     if (isNaN(pr) || pr <= 0) { alert('请填写正确的单价'); prEl.focus(); return; }
 
-    // 生成订单
+    // 成本处理：填了用输入的，没填用默认值
+    const purchaseInput = purchaseEl.value.trim();
+    const expressInput = expressEl.value.trim();
+    const packInput = packEl.value.trim();
+    const purchase = purchaseInput ? (parseFloat(purchaseInput) || 0) : defaultCost.purchase;
+    const express = expressInput ? (parseFloat(expressInput) || 0) : defaultCost.express;
+    const pack = packInput ? (parseFloat(packInput) || 0) : defaultCost.pack;
+
+    // 计算总成本和纯利润
+    const quantity = parseInt(qEl.value) || 1;
+    const totalAmount = (pr * quantity).toFixed(2);
+    const totalCost = purchase + express + pack;
+    const profit = (parseFloat(totalAmount) - totalCost).toFixed(2);
+
+    // 构造订单对象
     const o = {
       orderNumber: 'WX' + Date.now() + Math.floor(Math.random()*1000),
-      customerName: cEl.value.trim(),
+      customerName: c,
       address: addrEl.value.trim(),
       tel: telEl.value.trim(),
-      productName: pEl.value.trim(),
+      source1688: sourceEl.value.trim(),
+      productName: p,
       price: pr,
-      quantity: parseInt(qEl.value) || 1,
+      quantity: quantity,
+      purchase: purchase.toFixed(2),
+      express: express.toFixed(2),
+      pack: pack.toFixed(2),
+      totalCost: totalCost.toFixed(2),
+      totalAmount: totalAmount,
+      profit: parseFloat(profit),
       memo: memoEl.value.trim(),
-      totalAmount: (pr * (parseInt(qEl.value) || 1)).toFixed(2),
-      createTime: new Date().toLocaleString('zh-CN'),
-      status: paidEl.value
+      status: paidEl.value,
+      createTime: new Date().toLocaleString('zh-CN')
     };
 
     // 保存
     const arr = safeLoad();
     arr.push(o);
     safeSave(arr);
-
-    // 更新界面（就算失败也不影响订单保存）
-    try { countToday(); renderPreview(); } catch(e) {}
-
-    // 清空表单
-    cEl.value = pEl.value = prEl.value = addrEl.value = telEl.value = memoEl.value = '';
-    qEl.value = '1';
+    
+    // 更新界面
+    countToday();
+    renderPreview();
+    
+    // 清空表单（保留默认值提示）
+    cEl.value = pEl.value = prEl.value = qEl.value = '1';
+    addrEl.value = telEl.value = sourceEl.value = memoEl.value = '';
+    purchaseEl.value = expressEl.value = packEl.value = '';
     paidEl.value = '待收款';
-
+    
     // 震动反馈
     if (navigator.vibrate) navigator.vibrate(50);
-    alert('✅ 订单提交成功');
-
+    alert('✅ 订单提交成功！\n纯利润：¥' + profit);
   } catch(e) { alert('提交失败：' + e.message); }
 };
 
-// ==================== 导出功能（故障不影响录单）====================
+// ==================== 预览渲染（含利润/货源链接）====================
+const renderPreview = () => {
+  try {
+    const arr = safeLoad();
+    const el = document.getElementById('preview');
+    if (!arr.length) { el.innerHTML = '<p style="color:#bbb;text-align:center;font-size:13px;">暂无订单</p>'; return; }
+    
+    let html = '<table><tr><th>订单号</th><th>客户</th><th>纯利</th><th>状态</th><th>货源</th></tr>';
+    arr.slice(-5).reverse().forEach(o => {
+      const tagClass = o.status === '已收款' ? 'status-paid' : 'status-wait';
+      const profitClass = o.profit > 0 ? 'profit-positive' : o.profit < 0 ? 'profit-negative' : 'profit-zero';
+      const sourceHtml = o.source1688 ? `<a href="${o.source1688}" target="_blank" class="source-link">1688</a>` : '无';
+      
+      html += `<tr>
+        <td>${o.orderNumber.slice(-6)}</td>
+        <td>${o.customerName}</td>
+        <td class="${profitClass}">¥${o.profit.toFixed(2)}</td>
+        <td><span class="status-tag ${tagClass}">${o.status}</span></td>
+        <td>${sourceHtml}</td>
+      </tr>`;
+    });
+    html += '</table>';
+    el.innerHTML = html;
+  } catch(e) { console.error('渲染预览出错：', e); }
+};
+
+// ==================== 导出CSV（含所有成本/利润字段）====================
 const downloadCSV = () => {
   try {
     const arr = safeLoad();
     if (!arr.length) { alert('暂无订单'); return; }
-    let csv = '\uFEFF订单号,客户微信,联系电话,收货地址,商品,单价,数量,总额,备注,收款状态,下单时间\n';
+    
+    // 表头包含所有新增字段
+    let csv = '\uFEFF订单号,客户微信,联系电话,收货地址,商品名称,1688货源,采购成本(元),快递成本(元),包装成本(元),总成本(元),单价(元),数量,总额(元),纯利润(元),毛利(%),备注,收款状态,下单时间\n';
+    
     arr.forEach(o => {
+      const gross = o.totalAmount > 0 ? ((o.profit / o.totalAmount) * 100).toFixed(2) + '%' : '0.00%';
       const row = [
-        o.orderNumber, o.customerName, o.tel||'', o.address, o.productName,
-        o.price, o.quantity, o.totalAmount, o.memo, o.status, o.createTime
+        o.orderNumber, o.customerName, o.tel||'', o.address, o.productName, o.source1688||'',
+        o.purchase, o.express, o.pack, o.totalCost, o.price, o.quantity, o.totalAmount,
+        o.profit.toFixed(2), gross, o.memo, o.status, o.createTime
       ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(',');
       csv += row + '\n';
     });
+    
     triggerDown(new Blob([csv],{type:'text/csv;charset=utf-8'}), `微信订单_${Date.now()}.csv`);
   } catch(e) { alert('导出CSV失败：' + e.message); }
 };
 
+// ==================== 备份/清空 ====================
 const downloadJSON = () => {
   try {
     const arr = safeLoad();
@@ -278,7 +458,7 @@ const downloadJSON = () => {
 
 const clearOrders = () => {
   try {
-    if (!confirm('确定清空本地订单？（请先确保已导出备份）')) return;
+    if (!confirm('确定清空本地订单？（请先确保已导出备份，默认成本不会被清空）')) return;
     localStorage.removeItem(KEY);
     countToday();
     renderPreview();
@@ -286,38 +466,15 @@ const clearOrders = () => {
   } catch(e) { alert('清空失败：' + e.message); }
 };
 
-// ==================== 预览渲染（故障不影响其他功能）====================
-const renderPreview = () => {
-  try {
-    const arr = safeLoad();
-    const el = document.getElementById('preview');
-    if (!arr.length) {
-      el.innerHTML = '<p style="color:#bbb;text-align:center;font-size:13px;">暂无订单</p>';
-      return;
-    }
-    let html = '<table><tr><th>订单号</th><th>客户</th><th>金额</th><th>状态</th></tr>';
-    arr.slice(-5).reverse().forEach(o => {
-      const tagClass = o.status === '已收款' ? 'status-paid' : 'status-wait';
-      html += `<tr>
-        <td>${o.orderNumber.slice(-6)}</td>
-        <td>${o.customerName}</td>
-        <td>¥${o.totalAmount}</td>
-        <td><span class="status-tag ${tagClass}">${o.status}</span></td>
-      </tr>`;
-    });
-    html += '</table>';
-    el.innerHTML = html;
-  } catch(e) {}
-};
-
-// ==================== PWA注册（可选，失败不影响使用）====================
+// ==================== PWA注册（可选，不影响使用）====================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/wx-order/service-worker.js').catch(()=>{});
   });
 }
 
-// 初始化
+// ==================== 初始化 ====================
+loadDefaultCost(); // 加载默认成本
 countToday();
 renderPreview();
 </script>
