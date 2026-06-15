@@ -1,0 +1,19 @@
+name: Set Config
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create config.js
+        env:
+          TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: |
+          echo "const CONFIG = { GITHUB_TOKEN: '$TOKEN', OWNER: 'cff-122', REPO: 'wx-order' };" > config.js
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Auto update config'
