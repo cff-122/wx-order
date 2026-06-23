@@ -10,33 +10,42 @@
 :root{--primary:#07c160;--blue:#1677ff;--orange:#fa8c16;--red:#cf1322;--bg:#f4f6f8;--card:#fff;--radius:16px;--shadow:0 10px 30px rgba(0,0,0,0.06)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif}
+/* 公共类 */
 .mb-4{margin-bottom:4px}.mb-8{margin-bottom:8px}.mb-10{margin-bottom:10px}.mb-12{margin-bottom:12px}.mb-14{margin-bottom:14px}.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}
 .text-xs{font-size:11px;color:#999}.text-sm{font-size:12px;color:#666}.text-base{font-size:13px;color:#1f2937}.font-medium{font-weight:500}.font-semibold{font-weight:600}
 .border-t{border-top:1px solid #f0f0f0}.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
 .input-base{width:100%;padding:11px 12px;border:1px solid #e5e7eb;border-radius:10px;font-size:15px;background:#f9fafb;transition:all 0.2s}
 .input-base:focus{outline:none;border-color:var(--primary);background:#fff;box-shadow:0 0 0 3px rgba(7,193,96,0.1)}
+/* 只读输入框样式（已保存的符纸用） */
+.readonly-input{background:#f0f0f0 !important;cursor:not-allowed;color:#666}
 .tab-bar{position:sticky;top:0;z-index:100;background:var(--card);display:flex;height:48px;box-shadow:0 2px 10px rgba(0,0,0,0.05)}
 .tab-item{flex:1;display:flex;align-items:center;justify-content:center;font-size:14px;color:#999;cursor:pointer;position:relative;transition:all 0.2s}
 .tab-item.active{color:var(--primary)}
 .tab-item.active::after{content:'';position:absolute;bottom:0;left:25%;width:50%;height:3px;background:var(--primary);border-radius:3px 3px 0 0}
 .tab-content{display:none;padding:12px}.tab-content.active{display:block}
+/* 统计卡片 */
 .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat-card{padding:12px 8px;text-align:center}.stat-title{font-size:11px;color:#6b7280;margin-bottom:4px}
 .stat-num{font-size:17px;font-weight:700;word-break:break-all}.stat-order{color:var(--blue)}.stat-amount{color:var(--primary)}.stat-wait{color:var(--orange)}.stat-paid{color:#52c41a}.stat-profit{color:var(--red)}.stat-gross{color:#722ed1}.stat-unpaid{color:#d46b08}
+/* 按钮 */
 .btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:16px;font-weight:600;color:#fff;background:linear-gradient(135deg,#06d160,#0aab5a);margin-top:6px;cursor:pointer;transition:all 0.2s}
 .btn:active{transform:scale(0.98)}.action-bar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
 .btna{padding:9px 6px;border:none;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer}.btna-b{background:#eef4ff;color:var(--blue)}.btna-o{background:#fff7e6;color:var(--orange)}.btna-g{background:#f5f5f5;color:#666}
 .btna-danger{width:100%;padding:10px;border:none;border-radius:10px;background:#ff4d4f;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:10px;transition:all 0.2s}.btna-danger:active{transform:scale(0.98)}
 .btna-sm{background:#ff4d4f;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer;margin-left:8px}
 .btna-add{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:10px;font-size:13px;font-weight:600;cursor:pointer;width:100%;margin-top:12px}
+/* 状态标签 */
 .status-tag{padding:2px 7px;border-radius:20px;font-size:11px;font-weight:500}.status-paid{background:#f6ffed;color:#389e0d}.status-wait{background:#fff7e6;color:#d46b08}.status-deposit{background:#e6f7ff;color:var(--blue)}
-.p-pos{color:#389e0d}.p-neg{color:#cf1322}.p-zero{color:#999}.src{color:var(--blue);text-decoration:underline;font-size:11px}
-.tip{text-align:center;font-size:11px;color:#bbb;margin-top:12px}.warn{color:#fa8c16;font-size:12px;text-align:center;margin-top:8px}
-.product-row+.product-row{border-top:1px solid #f0f0f0;padding-top:12px}.product-talisman{margin:10px 0;display:flex;align-items:center;gap:8px}
-.no-data{text-align:center;color:#bbb;font-size:13px;padding:12px 0}
+/* 利润颜色 */.p-pos{color:#389e0d}.p-neg{color:#cf1322}.p-zero{color:#999}
+/* 链接 */.src{color:var(--blue);text-decoration:underline;font-size:11px}
+/* 提示文字 */.tip{text-align:center;font-size:11px;color:#bbb;margin-top:12px}.warn{color:#fa8c16;font-size:12px;text-align:center;margin-top:8px}
+/* 商品行 */.product-row+.product-row{border-top:1px solid #f0f0f0;padding-top:12px}.product-talisman{margin:10px 0;display:flex;align-items:center;gap:8px}
+/* 物料概览 */.material-item+.material-item{border-top:1px solid #f0f0f0;padding:10px 0}.no-data{text-align:center;color:#bbb;font-size:13px;padding:12px 0}
+/* 符纸条目 */
 .talisman-item{background:#f9fafb;border-radius:10px;padding:14px;margin-bottom:12px;position:relative}
 .talisman-item .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .talisman-item .header span{font-size:13px;font-weight:600;color:#1f2937}
+.lock-tip{font-size:11px;color:#999;margin-top:4px;display:flex;align-items:center;gap:4px}
 </style>
 </head>
 <body>
@@ -49,6 +58,7 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
 
 <!-- Tab1：创建订单 -->
 <div id="tab-create" class="tab-content active">
+  <!-- 默认成本设置 -->
   <div class="card mb-14">
     <div class="font-semibold mb-10" onclick="toggleCost()">⚙️ 全局默认成本 <span id="costArr" class="text-xs">▼</span></div>
     <div id="costBody" style="display:none">
@@ -75,6 +85,7 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
 
   <div class="card">
     <h2 class="text-base font-semibold text-center mb-16">🛒 新建订单</h2>
+    <!-- 订单级信息 -->
     <div class="mb-12"><label class="text-sm font-semibold mb-4 block">客户微信名</label><input id="c" class="input-base" placeholder="必填"></div>
     <div class="mb-12">
       <label class="text-sm font-semibold mb-4 block">收货地址（粘贴整段自动识别电话）</label>
@@ -86,13 +97,16 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
       </div>
     </div>
     <div class="mb-12"><label class="text-sm font-semibold mb-4 block">联系电话</label><input id="tel" class="input-base" inputmode="numeric"></div>
+    <!-- 订单级成本 -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px" class="mb-12">
       <div><label class="text-xs mb-4 block">快递成本(元/单，不填用默认)</label><input id="exp" class="input-base" type="number" step="0.01" placeholder="不填用默认"></div>
       <div></div><div></div>
     </div>
+    <!-- 商品列表 -->
     <div class="mb-12">
       <div class="text-base font-semibold mb-8">🛍️ 商品列表</div>
       <div id="productContainer">
+        <!-- 商品1固定 -->
         <div id="productRow0" class="product-row">
           <div style="display:flex;justify-content:space-between;align-items:center;margin:12px 0 8px 0">
             <span class="text-sm font-semibold text-gray-600">商品 1</span>
@@ -115,6 +129,7 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
       </div>
       <button type="button" onclick="addProductRow()" style="width:100%;padding:10px;border:2px dashed #e5e7eb;border-radius:10px;background:#f9fafb;color:#666;font-size:13px;font-weight:600;cursor:pointer;margin-top:12px">+ 添加更多商品</button>
     </div>
+    <!-- 收款状态 -->
     <div class="mb-12">
       <label class="text-sm font-semibold mb-4 block">收款状态</label>
       <select id="paid" class="input-base" onchange="toggleDeposit()">
@@ -128,6 +143,7 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
       <input id="deposit" class="input-base" type="number" step="0.01" placeholder="请输入已收定金" oninput="calcUnpaid()">
       <div id="depositResult" class="mt-8 p-10 bg-orange-50 rounded-lg text-sm text-orange-700 font-medium">未付尾款：¥0.00</div>
     </div>
+    <!-- 订单备注 -->
     <div class="mb-4"><label class="text-sm font-semibold mb-4 block">订单备注</label><input id="memo" class="input-base" placeholder="颜色/尺寸/特殊要求"></div>
     <button class="btn" onclick="go()">📋 提交订单</button>
     <p class="warn">⚠️ 微信内打开可能无法下载，请点右上角「在浏览器中打开」</p>
@@ -141,6 +157,7 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
 
 <!-- Tab2：数据概览 -->
 <div id="tab-overview" class="tab-content">
+  <!-- 统计卡片 -->
   <div class="stats-grid mb-14">
     <div class="stat-card"><div class="stat-title">📦 今日订单</div><div class="stat-num stat-order" id="tc">0</div></div>
     <div class="stat-card"><div class="stat-title">💰 销售额</div><div class="stat-num stat-amount" id="ta">¥0.00</div></div>
@@ -150,14 +167,17 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
     <div class="stat-card"><div class="stat-title">📈 毛利</div><div class="stat-num stat-gross" id="tg">0.00%</div></div>
     <div class="stat-card"><div class="stat-title">💢 待收尾款</div><div class="stat-num stat-unpaid" id="tu">¥0.00</div></div>
   </div>
+  <!-- 物料概览 -->
   <div class="card mb-14">
     <div class="text-base font-semibold mb-12">📦 物料库存与采购信息</div>
     <div id="materialOverviewContent" class="no-data">暂无物料信息，请前往「物料管理」配置</div>
   </div>
+  <!-- 待收尾款列表 -->
   <div class="card mb-14">
     <div class="text-base font-semibold mb-10 text-orange-700">💢 待收尾款客户</div>
     <div id="unpaidList" class="no-data">暂无待收尾款订单</div>
   </div>
+  <!-- 最近订单预览 -->
   <div class="card">
     <div class="text-base font-semibold mb-10">📃 最近订单</div>
     <div id="pv" class="no-data">暂无订单</div>
@@ -169,7 +189,7 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
 <div id="tab-materials" class="tab-content">
   <div class="card">
     <h2 class="text-base font-semibold text-center mb-16">📦 物料管理</h2>
-    <p class="text-xs text-gray-500 mb-16">订单提交时将自动扣减对应库存，采购运费为进货运费，非寄给客户的快递费</p>
+    <p class="text-xs text-gray-500 mb-16">订单提交时将自动扣减对应库存，采购运费为进货运费，非寄给客户的快递费<br>⚠️ 符纸数据保存后自动锁定，仅可通过「清除该符纸库存」按钮重置</p>
     
     <!-- 包装盒管理 -->
     <div class="p-14 bg-gray-50 rounded-lg mb-20">
@@ -186,9 +206,11 @@ body{max-width:540px;margin:0 auto;background:var(--bg);min-height:100vh;font-fa
     <!-- 符纸管理（多品类） -->
     <div class="p-14 bg-gray-50 rounded-lg mb-20">
       <div class="text-base font-semibold mb-12">📜 符纸管理（多规格）</div>
-      <div id="talismanListContainer"></div>
+      <div id="talismanListContainer">
+        <!-- 符纸条目会动态渲染到这里 -->
+      </div>
       <button type="button" class="btna-add" onclick="addTalismanItem()">+ 添加符纸品类</button>
-      <div class="mt-12 p-10 bg-orange-50 rounded-lg text-xs text-orange-700">💡 提示：每个符纸名称对应独立成本和库存，提交订单时选择对应符纸名称即可关联成本</div>
+      <div class="mt-12 p-10 bg-orange-50 rounded-lg text-xs text-orange-700">💡 提示：新增符纸填写后需点击「保存物料设置」锁定，锁定后仅可通过清除按钮重置库存</div>
     </div>
     
     <button class="btn" onclick="saveMaterials()">💾 保存物料设置</button>
@@ -206,6 +228,7 @@ const getOrders = () => { try { return JSON.parse(localStorage.getItem(K) || '[]
 const getMaterials = () => { 
   try { 
     const m = JSON.parse(localStorage.getItem(MK));
+    // 旧数据迁移：把单一talisman转为talismanList，默认标记为已保存
     if (m && m.talisman && !m.talismanList) {
       m.talismanList = [{
         id: Date.now(),
@@ -214,10 +237,17 @@ const getMaterials = () => {
         count: m.talisman.count || 0,
         freight: m.talisman.freight || 0,
         link: m.talisman.link || '',
-        unitCost: m.talisman.unitCost || 0
+        unitCost: m.talisman.unitCost || 0,
+        isSaved: true // 旧数据均为已保存状态，自动锁定
       }];
       delete m.talisman;
       localStorage.setItem(MK, JSON.stringify(m));
+    }
+    // 确保所有符纸都有isSaved字段
+    if (m && m.talismanList) {
+      m.talismanList.forEach(t => {
+        if (typeof t.isSaved === 'undefined') t.isSaved = true;
+      });
     }
     return m || { packaging: {purchasePrice:0,count:0,link:"",freight:0,unitCost:0}, talismanList: [] };
   } catch(e) { return { packaging: {purchasePrice:0,count:0,link:"",freight:0,unitCost:0}, talismanList: [] }; }
@@ -225,30 +255,6 @@ const getMaterials = () => {
 const getDefCost = () => { try { const j = localStorage.getItem(CK); if(j) defCost = JSON.parse(j); } catch(e) {} };
 const calcUnitCost = (price, count, freight) => count > 0 ? (price + freight) / count : 0;
 const formatMoney = (v) => `¥${(v || 0).toFixed(2)}`;
-
-/* ========= 🆕 核心修复：收集当前页面所有符纸的编辑数据 ========= */
-function collectCurrentTalismanData() {
-  const materials = getMaterials();
-  // 遍历所有已存在的符纸条目，同步页面输入值到数据对象
-  materials.talismanList.forEach(t => {
-    const nameInput = document.getElementById(`talismanName${t.id}`);
-    const purchaseInput = document.getElementById(`talismanPurchase${t.id}`);
-    const countInput = document.getElementById(`talismanCount${t.id}`);
-    const linkInput = document.getElementById(`talismanLink${t.id}`);
-    const freightInput = document.getElementById(`talismanFreight${t.id}`);
-    
-    if (nameInput) t.name = nameInput.value.trim();
-    if (purchaseInput) t.purchasePrice = parseFloat(purchaseInput.value) || 0;
-    if (countInput) t.count = parseInt(countInput.value) || 0;
-    if (linkInput) t.link = linkInput.value.trim();
-    if (freightInput) t.freight = parseFloat(freightInput.value) || 0;
-    // 重新计算单位成本
-    t.unitCost = calcUnitCost(t.purchasePrice, t.count, t.freight);
-  });
-  // 同步到本地存储，避免数据丢失
-  localStorage.setItem(MK, JSON.stringify(materials));
-  return materials;
-}
 
 /* ========= Tab切换 ========= */
 function switchTab(tab) {
@@ -312,7 +318,7 @@ function updateTalismanCost(index) {
   costSpan.textContent = talisman ? talisman.unitCost.toFixed(2) : '0.00';
 }
 
-/* ========= 物料管理（多符纸）========= */
+/* ========= 物料管理（多符纸，核心修改点）========= */
 function loadMaterials() {
   const m = getMaterials();
   // 包装盒
@@ -324,6 +330,7 @@ function loadMaterials() {
   document.getElementById('matPackStockWarning').innerHTML = m.packaging.count === 0 
     ? '<span class="text-xs text-red-500">⚠️ 包装盒库存已耗尽，请及时补货！</span>' 
     : `<span class="text-xs text-gray-600">当前库存：${m.packaging.count}个</span>`;
+  
   // 符纸列表
   renderTalismanList(m.talismanList);
   updateAllTalismanSelects();
@@ -340,22 +347,32 @@ function renderTalismanList(list) {
     const item = document.createElement('div');
     item.className = 'talisman-item';
     item.id = `talismanItem${t.id}`;
+    // 已保存的符纸：输入框只读+灰色样式，无oninput事件；未保存的：可编辑+有oninput事件
+    const readonlyAttr = t.isSaved ? 'readonly' : '';
+    const inputClass = t.isSaved ? 'input-base readonly-input' : 'input-base';
+    const oninputPurchase = t.isSaved ? '' : `oninput="calcTalismanUnitCost(${t.id})"`;
+    const oninputCount = t.isSaved ? '' : `oninput="calcTalismanUnitCost(${t.id})"`;
+    const oninputFreight = t.isSaved ? '' : `oninput="calcTalismanUnitCost(${t.id})"`;
+    const lockIcon = t.isSaved ? '🔒' : '';
+    const lockTip = t.isSaved ? '<div class="lock-tip">🔒 已锁定，仅可通过下方「清除该符纸库存」按钮重置库存</div>' : '';
+    
     item.innerHTML = `
       <div class="header">
-        <span>符纸品类</span>
+        <span>${lockIcon} 符纸品类 ${t.isSaved ? '（已锁定）' : '（未保存）'}</span>
         <button type="button" class="btna-sm" onclick="deleteTalismanItem(${t.id})">删除</button>
       </div>
-      <div class="mb-10"><label class="text-xs mb-4 block">符纸名称/备注（唯一）</label><input id="talismanName${t.id}" class="input-base" type="text" value="${t.name}" placeholder="例：平安符/招财符" oninput="checkTalismanName(${t.id})"></div>
-      <div class="mb-10"><label class="text-xs mb-4 block">总进价(元)</label><input id="talismanPurchase${t.id}" class="input-base" type="number" step="0.01" value="${t.purchasePrice}" placeholder="采购该符纸的总花费" oninput="calcTalismanUnitCost(${t.id})"></div>
-      <div class="mb-10"><label class="text-xs mb-4 block">总张数</label><input id="talismanCount${t.id}" class="input-base" type="number" min="0" value="${t.count}" placeholder="采购的总张数" oninput="calcTalismanUnitCost(${t.id})"></div>
-      <div class="mb-10"><label class="text-xs mb-4 block">1688货源链接</label><input id="talismanLink${t.id}" class="input-base" value="${t.link}" placeholder="符纸采购链接"></div>
-      <div class="mb-10"><label class="text-xs mb-4 block">采购运费(元)</label><input id="talismanFreight${t.id}" class="input-base" type="number" step="0.01" value="${t.freight}" placeholder="采购符纸时的运费" oninput="calcTalismanUnitCost(${t.id})"></div>
+      ${lockTip}
+      <div class="mb-10"><label class="text-xs mb-4 block">符纸名称/备注（唯一）</label><input id="talismanName${t.id}" class="${inputClass}" type="text" value="${t.name}" placeholder="例：平安符/招财符" oninput="checkTalismanName(${t.id})" ${readonlyAttr}></div>
+      <div class="mb-10"><label class="text-xs mb-4 block">总进价(元)</label><input id="talismanPurchase${t.id}" class="${inputClass}" type="number" step="0.01" value="${t.purchasePrice}" placeholder="采购该符纸的总花费" ${readonlyAttr} ${oninputPurchase}></div>
+      <div class="mb-10"><label class="text-xs mb-4 block">总张数</label><input id="talismanCount${t.id}" class="${inputClass}" type="number" min="0" value="${t.count}" placeholder="采购的总张数" ${readonlyAttr} ${oninputCount}></div>
+      <div class="mb-10"><label class="text-xs mb-4 block">1688货源链接</label><input id="talismanLink${t.id}" class="${inputClass}" value="${t.link}" placeholder="符纸采购链接" ${readonlyAttr}></div>
+      <div class="mb-10"><label class="text-xs mb-4 block">采购运费(元)</label><input id="talismanFreight${t.id}" class="${inputClass}" type="number" step="0.01" value="${t.freight}" placeholder="采购符纸时的运费" ${readonlyAttr} ${oninputFreight}></div>
       <div class="p-10 bg-green-50 rounded-lg text-sm text-green-700 mb-8">单张成本：<strong id="talismanUnitCost${t.id}">${t.unitCost.toFixed(2)}</strong> 元/张</div>
       <div id="talismanStockWarning${t.id}"></div>
       <button type="button" class="btna-danger" onclick="clearTalismanInventory(${t.id})">🗑️ 清除该符纸库存</button>
     `;
     container.appendChild(item);
-    // 库存预警
+    // 更新库存预警
     const warning = document.getElementById(`talismanStockWarning${t.id}`);
     warning.innerHTML = t.count === 0 
       ? '<span class="text-xs text-red-500">⚠️ 该符纸库存已耗尽，请及时补货！</span>' 
@@ -363,11 +380,14 @@ function renderTalismanList(list) {
   });
 }
 
-/* 🆕 修复：新增符纸前先同步当前页面修改 */
 function addTalismanItem() {
-  // 1. 先收集当前页面所有符纸的编辑内容，避免丢失
-  const materials = collectCurrentTalismanData();
-  // 2. 追加新的符纸品类
+  const materials = getMaterials();
+  // 检查是否有未保存的符纸，避免重复新增
+  const hasUnsaved = materials.talismanList.some(t => !t.isSaved);
+  if (hasUnsaved) {
+    alert('⚠️ 请先保存未锁定的符纸品类，再新增');
+    return;
+  }
   const newId = Date.now();
   materials.talismanList.push({
     id: newId,
@@ -376,28 +396,34 @@ function addTalismanItem() {
     count: 0,
     freight: 0,
     link: '',
-    unitCost: 0
+    unitCost: 0,
+    isSaved: false // 新增的符纸默认为未保存状态，可编辑
   });
-  // 3. 保存并重新渲染
   localStorage.setItem(MK, JSON.stringify(materials));
   renderTalismanList(materials.talismanList);
   updateAllTalismanSelects();
 }
 
-/* 🆕 修复：删除符纸前先同步当前页面修改 */
 function deleteTalismanItem(id) {
-  if (!confirm('⚠️ 确定要删除该符纸品类吗？此操作不可恢复！')) return;
-  // 1. 先收集当前页面所有符纸的编辑内容
-  const materials = collectCurrentTalismanData();
-  // 2. 过滤删除目标符纸
+  const materials = getMaterials();
+  const talisman = materials.talismanList.find(t => t.id === id);
+  if (!talisman) return;
+  
+  // 已保存的符纸删除需严格确认，未保存的直接确认
+  if (talisman.isSaved) {
+    if (!confirm('⚠️ 该符纸品类已保存，删除将永久移除该品类的所有记录（包括采购信息），是否继续？')) return;
+  } else {
+    if (!confirm('确定要删除该未保存的符纸品类吗？')) return;
+  }
+  
   materials.talismanList = materials.talismanList.filter(t => t.id !== id);
-  // 3. 保存并重新渲染
   localStorage.setItem(MK, JSON.stringify(materials));
   renderTalismanList(materials.talismanList);
   updateAllTalismanSelects();
 }
 
 function calcTalismanUnitCost(id) {
+  // 仅未保存的符纸会触发此函数
   const price = parseFloat(document.getElementById(`talismanPurchase${id}`).value) || 0;
   const count = parseInt(document.getElementById(`talismanCount${id}`).value) || 0;
   const freight = parseFloat(document.getElementById(`talismanFreight${id}`).value) || 0;
@@ -421,11 +447,12 @@ function checkTalismanName(id) {
 
 function clearTalismanInventory(id) {
   if (!confirm('⚠️ 确定要清除该符纸的库存吗？采购信息将保留，仅库存清零！')) return;
-  const materials = collectCurrentTalismanData();
+  const materials = getMaterials();
   const talisman = materials.talismanList.find(t => t.id === id);
   if (talisman) {
     talisman.count = 0;
     talisman.unitCost = 0;
+    talisman.isSaved = true; // 清除库存后仍保持锁定状态
     localStorage.setItem(MK, JSON.stringify(materials));
     renderTalismanList(materials.talismanList);
     alert('✅ 该符纸库存已清除！');
@@ -443,8 +470,7 @@ function clearPackInventory() {
 }
 
 function saveMaterials() {
-  // 保存前先同步当前页面的所有修改
-  const materials = collectCurrentTalismanData();
+  const materials = getMaterials();
   // 校验符纸名称唯一性
   const names = materials.talismanList.map(t => t.name);
   const uniqueNames = [...new Set(names)];
@@ -452,19 +478,32 @@ function saveMaterials() {
     alert('⚠️ 符纸名称不能重复，请修改后再保存！');
     return;
   }
+  // 校验未保存的符纸是否填写完整
+  const unsaved = materials.talismanList.filter(t => !t.isSaved);
+  for (const t of unsaved) {
+    if (!t.name.trim()) {
+      alert('⚠️ 有未保存的符纸品类未填写名称，请补充后保存！');
+      return;
+    }
+  }
   // 更新包装盒信息
   materials.packaging.purchasePrice = parseFloat(document.getElementById('matPackPurchase').value) || 0;
   materials.packaging.count = parseInt(document.getElementById('matPackCount').value) || 0;
   materials.packaging.link = document.getElementById('matPackLink').value.trim();
   materials.packaging.freight = parseFloat(document.getElementById('matPackFreight').value) || 0;
   materials.packaging.unitCost = calcUnitCost(materials.packaging.purchasePrice, materials.packaging.count, materials.packaging.freight);
-  // 保存并更新
+  // 所有符纸标记为已保存，锁定输入框
+  materials.talismanList.forEach(t => {
+    t.isSaved = true;
+    t.unitCost = calcUnitCost(t.purchasePrice, t.count, t.freight);
+  });
   localStorage.setItem(MK, JSON.stringify(materials));
+  // 同步默认成本
   defCost.packagingUnit = materials.packaging.unitCost;
   localStorage.setItem(CK, JSON.stringify(defCost));
   document.getElementById('defPackaging').value = defCost.packagingUnit.toFixed(2);
   loadMaterials();
-  alert('✅ 物料设置保存成功！');
+  alert('✅ 物料设置保存成功！所有符纸已锁定，仅可通过清除按钮重置库存');
 }
 
 /* ========= 商品行管理 ========= */
@@ -538,6 +577,7 @@ function go() {
     if(!cV) { alert('客户微信名必填'); c.focus(); return; }
     let totalQty = 0, items = [], hasError = false;
     const materials = getMaterials();
+    
     for(let i=0; i<=itemIndex; i++) {
       const pEl = document.getElementById(`p${i}`), prEl = document.getElementById(`pr${i}`), qEl = document.getElementById(`q${i}`), srcEl = document.getElementById(`src1688${i}`), purEl = document.getElementById(`pur${i}`), talSelect = document.getElementById(`talismanSelect${i}`);
       if(!pEl || !prEl || !qEl) continue;
@@ -561,6 +601,7 @@ function go() {
     }
     if(hasError) return;
     if(totalQty === 0) { alert('至少添加一个商品且数量大于0'); return; }
+    
     // 库存校验
     if(materials.packaging.count < totalQty) { alert(`❌ 包装盒库存不足！当前剩余${materials.packaging.count}个，需要${totalQty}个`); return; }
     for(const item of items) {
@@ -570,14 +611,16 @@ function go() {
         if (talisman.count < item.quantity) { alert(`❌ 符纸「${item.talismanName}」库存不足！当前剩余${talisman.count}张，需要${item.quantity}张`); return; }
       }
     }
+    
     // 定金校验
-    const paidVal = paid.value, totalSales = items.reduce((s,i) => s + i.productTotal, 0);
+    const paidVal = paid.value, totalSales = items.reduce((s, i) => s + i.productTotal, 0);
     let depositVal = 0, unpaidVal = 0;
     if(paidVal === '待收款（定金）') {
       depositVal = parseFloat(deposit.value) || 0;
       unpaidVal = totalSales - depositVal;
       if(depositVal >= totalSales) { alert('定金不能大于等于商品总金额！'); deposit.focus(); return; }
     }
+    
     // 成本利润计算
     const packagingUnitCost = materials.packaging.unitCost || defCost.packagingUnit;
     const expressCost = parseFloat(exp.value) || defCost.exp;
@@ -592,6 +635,7 @@ function go() {
       orderTotalCost += i.itemTotalCost;
       orderTotalProfit += i.itemProfit;
     });
+    
     // 扣减库存
     materials.packaging.count -= totalQty;
     items.forEach(item => {
@@ -602,6 +646,7 @@ function go() {
       }
     });
     localStorage.setItem(MK, JSON.stringify(materials));
+    
     // 保存订单
     const order = {
       orderNumber: `WX${Date.now()}${Math.floor(Math.random()*1000)}`,
@@ -622,6 +667,7 @@ function go() {
     const orders = getOrders();
     orders.push(order);
     localStorage.setItem(K, JSON.stringify(orders));
+    
     // 重置表单
     resetForm();
     loadMaterials();
@@ -667,7 +713,7 @@ function cnt() {
     $.tw.textContent = formatMoney(w);
     $.tp.textContent = formatMoney(p);
     $.tpr.textContent = formatMoney(prf);
-    $.tg.textContent = a>0 ? `${(prf/a*100).toFixed(2)}%` : '0.00%';
+    $.tg.textContent = a > 0 ? `${(prf/a*100).toFixed(2)}%` : '0.00%';
     $.tu.textContent = formatMoney(u);
   } catch(e) {}
 }
@@ -681,12 +727,14 @@ function renderMaterialOverview() {
       return;
     }
     let html = '';
+    // 包装盒
     if(m.packaging.count > 0) {
       html += `<div class="material-item"><div class="text-sm font-medium mb-4">📦 包装盒</div><div class="text-xs text-gray-600"><span>库存：${m.packaging.count}个</span><span class="ml-12">单位成本：${formatMoney(m.packaging.unitCost)}/个</span><span class="ml-12">总进价：${formatMoney(m.packaging.purchasePrice + m.packaging.freight)}</span></div>${m.packaging.link ? `<a href="${m.packaging.link}" target="_blank" class="src mt-4 inline-block">1688采购链接 ↗</a>` : ''}</div>`;
     }
+    // 符纸列表
     m.talismanList.forEach(t => {
       if(t.count > 0 || t.purchasePrice > 0) {
-        html += `<div class="material-item"><div class="text-sm font-medium mb-4">📜 符纸：${t.name}</div><div class="text-xs text-gray-600"><span>库存：${t.count}张</span><span class="ml-12">单位成本：${formatMoney(t.unitCost)}/张</span><span class="ml-12">总进价：${formatMoney(t.purchasePrice + t.freight)}</span></div>${t.link ? `<a href="${t.link}" target="_blank" class="src mt-4 inline-block">1688采购链接 ↗</a>` : ''}</div>`;
+        html += `<div class="material-item"><div class="text-sm font-medium mb-4">📜 符纸：${t.name} ${t.isSaved ? '🔒' : ''}</div><div class="text-xs text-gray-600"><span>库存：${t.count}张</span><span class="ml-12">单位成本：${formatMoney(t.unitCost)}/张</span><span class="ml-12">总进价：${formatMoney(t.purchasePrice + t.freight)}</span></div>${t.link ? `<a href="${t.link}" target="_blank" class="src mt-4 inline-block">1688采购链接 ↗</a>` : ''}</div>`;
       }
     });
     el.innerHTML = html || '<div class="no-data">暂无有效物料信息</div>';
@@ -731,16 +779,20 @@ function dlCSV() {
     const orders = getOrders();
     if(!orders.length) { alert('暂无订单'); return; }
     const m = getMaterials();
-    let csv = '\uFEFF【物料采购信息汇总】\n物料类型,名称/备注,当前库存,单位成本(元),总进价(元),采购运费(元),采购链接\n';
+    let csv = '\uFEFF【物料采购信息汇总】\n物料类型,名称/备注,当前库存,单位成本(元),总进价(元),采购运费(元),采购链接,状态\n';
+    // 包装盒
     csv += `包装盒,,${m.packaging.count}个,${formatMoney(m.packaging.unitCost)}/个,${formatMoney(m.packaging.purchasePrice + m.packaging.freight)},${formatMoney(m.packaging.freight)},"${m.packaging.link||'无'}"\n`;
+    // 符纸列表
     m.talismanList.forEach(t => {
       if(t.name) {
-        csv += `符纸,"${t.name}",${t.count}张,${formatMoney(t.unitCost)}/张,${formatMoney(t.purchasePrice + t.freight)},${formatMoney(t.freight)},"${t.link||'无'}"\n`;
+        csv += `符纸,"${t.name}",${t.count}张,${formatMoney(t.unitCost)}/张,${formatMoney(t.purchasePrice + t.freight)},${formatMoney(t.freight)},"${t.link||'无'}","${t.isSaved ? '已锁定' : '未保存'}"\n`;
       }
     });
     csv += '\n【订单明细】\n订单号,客户微信,联系电话,收货地址,商品名称,商品单价(元),商品数量,商品总金额(元),商品1688链接,商品采购成本(元/个),包装盒成本(元/个),符纸名称,符纸成本(元/张),分摊快递成本(元/个),商品总成本(元),是否含符纸,已付定金(元),未付尾款(元),纯利润(元),毛利(%),订单备注,收款状态,下单时间\n';
+    
     orders.forEach(order => {
       if(!order.items || order.items.length === 0) {
+        // 旧数据处理
         const amt = parseFloat(order.totalAmount) || 0, pf = parseFloat(order.profit) || 0, gr = amt>0?`${(pf/amt*100).toFixed(2)}%`:'0.00%';
         csv += `"${order.orderNumber}","${order.customerName}","${order.tel}","${order.address}","${order.productName}",${order.price},${order.quantity},${amt},"${order.src1688||''}",${order.purchase||0},0,"旧数据",0,${(parseFloat(order.express)||0)/(order.quantity||1)||0},${parseFloat(order.totalCost)||0},"旧数据",${parseFloat(order.deposit)||0},${parseFloat(order.unpaid)||0},${pf.toFixed(2)},"${gr}","${order.memo||''}","${order.status||'已收款'}","${order.createTime||''}"\n`;
       } else {
